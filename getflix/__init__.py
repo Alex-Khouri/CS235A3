@@ -9,6 +9,13 @@ from getflix.domainmodel.review import Review
 from getflix.domainmodel.user import User
 from getflix.domainmodel.watchlist import Watchlist
 
+from getflix.repository.orm import metadata, map_model_to_tables
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, clear_mappers
+from sqlalchemy.pool import NullPool
+
+
 def create_app():
     app = Flask(__name__)
     app.secret_key = b'09s1nfe5m9dj4fs0'
@@ -17,7 +24,26 @@ def create_app():
     # Valid `authStatus` values: "logged in", "logged out", "logging in", "registering"
     # Valid `clientData` keys (complex data types):
     #  		filteredMovies, currWatchlist, watchlistSize
-    repo = DatabaseRepo('getflix/datafiles/Data1000Movies.csv')
+
+    data_path = 'getflix/datafiles/Data1000Movies.csv'
+    repo = DatabaseRepo(data_path)
+    # ## NEW DATABASE CODE (START)
+    database_engine = create_engine('getflix/repository/getflix_database.db', connect_args={"check_same_thread": False}, poolclass=NullPool, echo=True)
+    if len(database_engine.table_names()) == 0:
+        clear_mappers()
+        metadata.create_all(database_engine)
+        for table in reversed(metadata.sorted_tables):
+            database_engine.execute(table.delete())
+        map_model_to_tables()
+
+        repo.populate(database_engine, data_path)
+    else:
+        map_model_to_tables()
+
+    session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
+    repo.repo_instance = repo.SqlAlchemyRepository(session_factory)
+    # ## NEW DATABASE CODE (END)
+
     servData = {
         "titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
         "allMovies": repo.movies,

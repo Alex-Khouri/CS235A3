@@ -93,6 +93,46 @@ class DatabaseRepo:
 				return user.watchlist
 		return None
 
+	def populate(engine, data_path):
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+
+		global tags
+		tags = dict()
+
+		insert_articles = """
+			INSERT INTO articles (
+			id, date, title, first_para, hyperlink, image_hyperlink)
+			VALUES (?, ?, ?, ?, ?, ?)"""
+		cursor.executemany(insert_articles, article_record_generator('getflix/datafiles/Data1000Movies.csv'))
+
+		insert_tags = """
+			INSERT INTO tags (
+			id, name)
+			VALUES (?, ?)"""
+		cursor.executemany(insert_tags, get_tag_records())
+
+		insert_article_tags = """
+			INSERT INTO article_tags (
+			id, article_id, tag_id)
+			VALUES (?, ?, ?)"""
+		cursor.executemany(insert_article_tags, article_tags_generator())
+
+		insert_users = """
+			INSERT INTO users (
+			id, username, password)
+			VALUES (?, ?, ?)"""
+		cursor.executemany(insert_users, generic_generator(os.path.join(data_path, 'users.csv'), process_user))
+
+		insert_comments = """
+			INSERT INTO comments (
+			id, user_id, article_id, comment, timestamp)
+			VALUES (?, ?, ?, ?, ?)"""
+		cursor.executemany(insert_comments, generic_generator(os.path.join(data_path, 'comments.csv')))
+
+		conn.commit()
+		conn.close()
+
 
 if __name__ == "__main__":
 	from getflix.domainmodel.actor import Actor
