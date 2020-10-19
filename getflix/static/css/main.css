@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #303030;
+    color: white
+}
+a {
+    color: white;
+    cursor: pointer;
+}
+table {
+    width: 100%;
+    text-align: justify;
+    table-layout: fixed;
+    margin-left: auto;
+    margin-right: auto;
+}
+td {
+    table-layout: fixed;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+
+td.form-label {
+    text-align: right;
+}
+td.form-input {
+    text-align: left;
+}
+
+
+.flex-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.banner {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.window {
+    text-align: center;
+}
+.browse-window {
+    vertical-align: text-top;
+    width: 100px;
+    padding: 10px;
+    background-color: #505050;
+}
+.movies-window {
+    vertical-align: text-top;
+    text-align: left;
+    padding: 10px;
+}
+.watchlist-window {
+    vertical-align: text-top;
+    text-align: center;
+    width: 100px;
+    padding: 10px;
+    background-color: #505050;
+}
+.browse-submenu {
+    display: none;
+    overflow: auto;
+    height: 300px;
+}
+.button {
+    border: 2px solid #dfdfdf;
+    border-radius: 5px;
+    background-color: #dfdfdf;
+    height: 36px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 100%;
+    cursor: pointer;
+}
+.textbox {
+    border: 2px solid #dfdfdf;
+    border-radius: 5px;
+    background-color: #dfdfdf;
+    height: 30px;
+    font-size: 100%;
+}.textarea {
+    border: 2px solid #dfdfdf;
+    border-radius: 5px;
+    background-color: #dfdfdf;
+    font-size: 100%;
+}
+.visible {display: block;}
+.hidden {display: none;}
+
+
