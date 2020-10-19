@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, session
 
-from getflix.repository.memory_repo import MemoryRepo
+from getflix.repository.database_repo import DatabaseRepo
 from getflix.domainmodel.actor import Actor
 from getflix.domainmodel.director import Director
 from getflix.domainmodel.genre import Genre
@@ -17,7 +17,7 @@ def create_app():
     # Valid `authStatus` values: "logged in", "logged out", "logging in", "registering"
     # Valid `clientData` keys (complex data types):
     #  		filteredMovies, currWatchlist, watchlistSize
-    repo = MemoryRepo('getflix/datafiles/Data1000Movies.csv')
+    repo = DatabaseRepo('getflix/datafiles/Data1000Movies.csv')
     servData = {
         "titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
         "allMovies": repo.movies,

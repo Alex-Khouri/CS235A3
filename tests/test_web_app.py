@@ -2,7 +2,7 @@ import pytest
 
 from flask import Flask, request, render_template, session
 
-from getflix.repository.memory_repo import MemoryRepo
+from getflix.repository.database_repo import DatabaseRepo
 from getflix.domainmodel.actor import Actor
 from getflix.domainmodel.director import Director
 from getflix.domainmodel.genre import Genre

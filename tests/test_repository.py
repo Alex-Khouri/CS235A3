@@ -1,6 +1,6 @@
 import pytest
 
-from getflix.repository.memory_repo import MemoryRepo
+from getflix.repository.database_repo import DatabaseRepo
 from getflix.domainmodel.actor import Actor
 from getflix.domainmodel.director import Director
 from getflix.domainmodel.genre import Genre
@@ -11,7 +11,7 @@ from getflix.domainmodel.watchlist import Watchlist
 
 @pytest.fixture
 def repo():
-    return MemoryRepo('tests/data/Data1000Movies.csv')
+    return DatabaseRepo('tests/data/Data1000Movies.csv')
 
 @pytest.fixture
 def user():
