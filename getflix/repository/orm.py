@@ -5,37 +5,64 @@ from sqlalchemy.orm import mapper, relationship
 
 metadata = MetaData()
 
+# Lists of objects are stored as CSV strings of their corresponding IDs
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('username', String(255), unique=True, nullable=False),
 	Column('password', String(255), nullable=False)
 )
-
-comments = Table(
-	'comments', metadata,
+reviews = Table(
+	'reviews', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('user_id', ForeignKey('users.id')),
-	Column('article_id', ForeignKey('articles.id')),
-	Column('comment', String(1024), nullable=False),
-	Column('timestamp', DateTime, nullable=False)
+	Column('movie_id', ForeignKey('movies.id')),
+	Column('text', String(1024), nullable=False),
+	Column('rating', Integer, nullable=False),
+	Column('timestamp', DateTime, nullable=False),
+	Column('date', String(1024), nullable=False),
 )
-
-articles = Table(
-	'articles', metadata,
+movies = Table(
+	'movies', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
-	Column('date', Date, nullable=False),
 	Column('title', String(255), nullable=False),
-	Column('first_para', String(1024), nullable=False),
-	Column('hyperlink', String(255), nullable=False),
-	Column('image_hyperlink', String(255), nullable=False)
+	Column('year', Integer, nullable=False),
+	Column('description', String(1024), nullable=False),
+	Column('director_id', ForeignKey('directors.id')),
+	Column('actors', String(1024), nullable=False),  # CSV string of IDs
+	Column('genres', String(1024), nullable=False),  # CSV string of IDs
+	Column('runtime', Integer, nullable=False),
+	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
+	Column('review_count', Integer, nullable=False),
+	Column('rating', Integer, nullable=False),
+	Column('votes', Integer, nullable=False),
+	Column('movie_ID', String(1024), nullable=False)  # Movie title (without spaces) concatenated with year
+)
+actors = Table(
+	'actors', metadata,
+	Column('id', Integer, primary_key=True, autoincrement=True),
+	Column('name', String(255), nullable=False),
+	Column('movies', String(1024), nullable=False),  # CSV string of IDs
+	Column('colleagues', String(1024), nullable=False)  # CSV string of IDs
+)
+directors = Table(
+	'directors', metadata,
+	Column('id', Integer, primary_key=True, autoincrement=True),
+	Column('name', String(255), nullable=False),
+	Column('movies', String(1024), nullable=False)  # CSV string of IDs
+)
+genres = Table(
+	'genres', metadata,
+	Column('id', Integer, primary_key=True, autoincrement=True),
+	Column('name', String(255), nullable=False),
+	Column('movies', String(1024), nullable=False)  # CSV string of IDs
+)
+watchlists = Table(
+	'watchlists', metadata,
+	Column('id', Integer, primary_key=True, autoincrement=True),
+	Column('movies', String(1024), nullable=False)  # CSV string of IDs
 )
 
-tags = Table(
-	'tags', metadata,
-	Column('id', Integer, primary_key=True, autoincrement=True),
-	Column('name', String(64), nullable=False)
-)
 
 article_tags = Table(
 	'article_tags', metadata,
@@ -49,7 +76,7 @@ def map_model_to_tables():
 	mapper(User, users, properties={
 		'_username': users.c.username,
 		'_password': users.c.password,
-		'_comments': relationship(model.Comment, backref='_user')
+		'_watchlist': relationship(model.Comment, backref='_user')
 	})
 	mapper(Review, comments, properties={
 		'_comment': comments.c.comment,

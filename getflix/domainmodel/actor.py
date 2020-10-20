@@ -1,21 +1,21 @@
 
 class Actor:
 	def __init__(self, name=None):
-		if (isinstance(name, str) and len(name) > 0):
+		if isinstance(name, str) and len(name) > 0:
 			self.name = name
 		else:
 			self.name = None
 		self.actor_movies = list()
-		self.actor_colleagues = []
+		self.actor_colleagues = list()
 	
 	def __repr__(self):
 		return f"<Actor {self.name}>"
 	
 	def __eq__(self, other):
-		return (self.__class__ == other.__class__ and self.name == other.name)
+		return self.__class__ == other.__class__ and self.name == other.name
 	
 	def __lt__(self, other):
-		return (self.name < other.name)
+		return self.name < other.name
 	
 	def __hash__(self):
 		return hash(self.name)
