@@ -131,10 +131,10 @@ class DatabaseRepo:
 
 # >> NEW DATABASE CODE (START)
 def article_record_generator(filename: str):
-    with open(filename, mode='r', encoding='utf-8-sig') as infile:
-        reader = csv.reader(infile)
+	with open(filename, mode='r', encoding='utf-8-sig') as infile:
+		reader = csv.reader(infile)
 
-        # Read first line of the CSV file.
+		# Read first line of the CSV file.
         headers = next(reader)
 
         # Read remaining rows from the CSV file.
