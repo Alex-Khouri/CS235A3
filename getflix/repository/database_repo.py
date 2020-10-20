@@ -243,7 +243,6 @@ def populate(engine, data_path):
 	conn.commit()
 	conn.close()
 
-
 # << NEW DATABASE CODE (END)
 
 

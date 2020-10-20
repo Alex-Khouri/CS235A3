@@ -5,12 +5,16 @@ from sqlalchemy.orm import mapper, relationship
 
 metadata = MetaData()
 
-# Lists of objects are stored as CSV strings of their corresponding IDs
+# Lists of objects are stored as CSV strings of primary key IDs ( i.e. ",".join([str(x) for x in array]) )
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('username', String(255), unique=True, nullable=False),
-	Column('password', String(255), nullable=False)
+	Column('password', String(255), nullable=False),
+	Column('watched', String(1024), nullable=False),  # CSV string of IDs
+	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
+	Column('watchlist', ForeignKey('watchlists.id')),
+	Column('timewatching', Integer, nullable=False)
 )
 reviews = Table(
 	'reviews', metadata,
@@ -64,40 +68,52 @@ watchlists = Table(
 )
 
 
-article_tags = Table(
-	'article_tags', metadata,
-	Column('id', Integer, primary_key=True, autoincrement=True),
-	Column('article_id', ForeignKey('articles.id')),
-	Column('tag_id', ForeignKey('tags.id'))
-)
-
-
 def map_model_to_tables():
 	mapper(User, users, properties={
-		'_username': users.c.username,
-		'_password': users.c.password,
-		'_watchlist': relationship(model.Comment, backref='_user')
+		'user_username': users.c.username,
+		'user_password': users.c.password,
+		'user_watched': users.c.watched,
+		'user_reviews': users.c.reviews,
+		'user_watchlist': relationship(Watchlist),
+		'user_timewatching': users.c.timewatching
 	})
-	mapper(Review, comments, properties={
-		'_comment': comments.c.comment,
-		'_timestamp': comments.c.timestamp
+	mapper(Review, reviews, properties={
+		'review_user': relationship(User),
+		'review_movie': relationship(Movie),
+		'review_text': reviews.c.text,
+		'review_rating': reviews.c.rating,
+		'review_timestamp': reviews.c.timestamp,
+		'review_date': reviews.c.date
 	})
-	articles_mapper = mapper(Movie, articles, properties={
-		'_id': articles.c.id,
-		'_date': articles.c.date,
-		'_title': articles.c.title,
-		'_first_para': articles.c.first_para,
-		'_hyperlink': articles.c.hyperlink,
-		'_image_hyperlink': articles.c.image_hyperlink,
-		'_comments': relationship(model.Comment, backref='_article')
+	mapper(Movie, movies, properties={
+		'movie_title': movies.c.title,
+		'movie_year': movies.c.year,
+		'movie_description': movies.c.description,
+		'movie_director': relationship(Director, backref='director_movies'),
+		'movie_actors': movies.c.actors,
+		'movie_genres': movies.c.genres,
+		'movie_runtime_minutes': movies.c.runtime,
+		'movie_reviews': movies.c.reviews,
+		'movie_review_count': movies.c.review_count,
+		'movie_rating': movies.c.rating,
+		'movie_votes': movies.c.votes,
+		'movie_ID': movies.c.movie_ID  # Movie title (without spaces) concatenated with year
 	})
-	mapper(Genre, tags, properties={
-		'_tag_name': tags.c.name,
-		'_tagged_articles': relationship(
-			articles_mapper,
-			secondary=article_tags,
-			backref="_tags"
-		)
+	mapper(Actor, actors, properties={
+		'actor_name': actors.c.name,
+		'actor_movies': actors.c.movies,
+		'actor_colleagues': actors.c.colleagues
+	})
+	mapper(Director, directors, properties={
+		'director_name': directors.c.name,
+		'director_movies': directors.c.movies
+	})
+	mapper(Genre, genres, properties={
+		'genre_name': genres.c.name,
+		'genre_movies': genres.c.movies
+	})
+	mapper(Watchlist, watchlists, properties={
+		'watchlist_movie_list': watchlists.c.movies
 	})
 
 

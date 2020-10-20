@@ -2,26 +2,26 @@
 class Director:
 	def __init__(self, name):
 		if (isinstance(name, str) and len(name) > 0):
-			self.name = name
+			self.director_name = name
 		else:
-			self.name = None
+			self.director_name = None
 		self.director_movies = list()
 	
 	def __repr__(self):
-		return f"<Director {self.name}>"
+		return f"<Director {self.director_name}>"
 	
 	def __eq__(self, other):
-		return (self.__class__ == other.__class__ and self.name == other.name)
+		return (self.__class__ == other.__class__ and self.director_name == other.name)
 	
 	def __lt__(self, other):
-		return (self.name < other.name)
+		return (self.director_name < other.name)
 	
 	def __hash__(self):
-		return hash(self.name)
+		return hash(self.director_name)
 	
 	@property
 	def director_full_name(self):
-		return self.name
+		return self.director_name
 
 	@property
 	def movies(self):
@@ -29,7 +29,7 @@ class Director:
 	
 	@director_full_name.setter
 	def director_full_name(self, newName):
-		self.name = newName
+		self.director_name = newName
 
 	@movies.setter
 	def movies(self, newMovies):

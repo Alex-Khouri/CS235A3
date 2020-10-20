@@ -2,27 +2,27 @@
 class Actor:
 	def __init__(self, name=None):
 		if isinstance(name, str) and len(name) > 0:
-			self.name = name
+			self.actor_name = name
 		else:
-			self.name = None
+			self.actor_name = None
 		self.actor_movies = list()
 		self.actor_colleagues = list()
 	
 	def __repr__(self):
-		return f"<Actor {self.name}>"
+		return f"<Actor {self.actor_name}>"
 	
 	def __eq__(self, other):
-		return self.__class__ == other.__class__ and self.name == other.name
+		return self.__class__ == other.__class__ and self.actor_name == other.name
 	
 	def __lt__(self, other):
-		return self.name < other.name
+		return self.actor_name < other.name
 	
 	def __hash__(self):
-		return hash(self.name)
+		return hash(self.actor_name)
 	
 	@property
 	def actor_full_name(self):
-		return self.name
+		return self.actor_name
 
 	@property
 	def movies(self):
@@ -34,7 +34,7 @@ class Actor:
 	
 	@actor_full_name.setter
 	def actor_full_name(self, newName):
-		self.name = newName
+		self.actor_name = newName
 
 	@movies.setter
 	def movies(self, newMovies):
