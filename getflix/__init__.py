@@ -16,6 +16,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 from sqlalchemy.pool import NullPool
 
+import sqlite3
+
 
 def create_app():
 	app = Flask(__name__)
@@ -28,9 +30,9 @@ def create_app():
 
 	data_path = 'getflix/datafiles/Data1000Movies.csv'
 	database_path = 'getflix/repository/getflix_database.db'
-	repo = DatabaseRepo(data_path)
-	# >> NEW DATABASE CODE (START)
 	database_engine = create_engine(database_path, connect_args={"check_same_thread": False}, poolclass=NullPool, echo=True)
+	session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
+	repo = DatabaseRepo(session_factory)
 	if len(database_engine.table_names()) == 0:
 		clear_mappers()
 		metadata.create_all(database_engine)
@@ -38,13 +40,9 @@ def create_app():
 			database_engine.execute(table.delete())
 		map_model_to_tables()
 
-		database_repo.populate(database_engine, data_path)
+		database_repo.populate(database_engine, data_path)  # ?? Do this before mapping model to tables?
 	else:
 		map_model_to_tables()
-
-	session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
-	repo = DatabaseRepo(data_path, session_factory)
-	# << NEW DATABASE CODE (END)
 
 	servData = {
 		"titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
