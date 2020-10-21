@@ -5,7 +5,7 @@ from sqlalchemy.orm import mapper, relationship
 
 metadata = MetaData()
 
-# Lists of objects are stored as CSV strings of primary key IDs ( i.e. ",".join([str(x) for x in array]) )
+# Lists of objects are stored as CSV strings of primary key IDs
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
@@ -40,7 +40,7 @@ movies = Table(
 	Column('review_count', Integer, nullable=False),
 	Column('rating', Integer, nullable=False),
 	Column('votes', Integer, nullable=False),
-	Column('movie_ID', String(1024), nullable=False)  # Movie title (without spaces) concatenated with year
+	Column('codes', String(1024), nullable=False)  # Movie title (without spaces) concatenated with year
 )
 actors = Table(
 	'actors', metadata,
@@ -97,7 +97,7 @@ def map_model_to_tables():
 		'movie_review_count': movies.c.review_count,
 		'movie_rating': movies.c.rating,
 		'movie_votes': movies.c.votes,
-		'movie_ID': movies.c.movie_ID  # Movie title (without spaces) concatenated with year
+		'movie_code': movies.c.codes  # Movie title concatenated with year (alphanumeric characters only)
 	})
 	mapper(Actor, actors, properties={
 		'actor_name': actors.c.name,

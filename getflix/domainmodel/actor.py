@@ -7,6 +7,7 @@ class Actor:
 			self.actor_name = None
 		self.actor_movies = list()
 		self.actor_colleagues = list()
+		self.actor_code = "".join([c for c in self.actor_name if c.isalnum()])
 	
 	def __repr__(self):
 		return f"<Actor {self.actor_name}>"
@@ -31,6 +32,10 @@ class Actor:
 	@property
 	def colleagues(self):
 		return self.actor_colleagues
+
+	@property
+	def code(self):
+		return self.actor_code
 	
 	@actor_full_name.setter
 	def actor_full_name(self, newName):
@@ -45,6 +50,11 @@ class Actor:
 	def colleagues(self, newColleagues):
 		if isinstance(newColleagues, list):
 			self.actor_colleagues = newColleagues
+
+	@code.setter
+	def code(self, newCode):
+		self.actor_code = self.actor_code  # This value should never be manually changed
+		print("WARNING: Codes cannot be manually reassigned")
 		
 	def add_actor_colleague(self, colleague):
 		self.actor_colleagues.append(colleague)

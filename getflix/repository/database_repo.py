@@ -11,14 +11,14 @@ def populate(engine, data_path):
 
 	csvReader = MovieFileCSVReader(data_path)
 	csvReader.read_csv_file()
-	movies = csvReader.dataset_of_movies
+	genres = csvReader.dataset_of_genres
 	actors = csvReader.dataset_of_actors
 	directors = csvReader.dataset_of_directors
-	genres = csvReader.dataset_of_genres
+	movies = csvReader.dataset_of_movies
 
-	for movie in movies:
-		cursor.execute(f"INSERT INTO movies () \
-						VALUES ()")
+	for genre in genres:
+		cursor.execute(f"INSERT INTO genres (name, movies) \
+						VALUES ({genre.name}, {genre.csvMovies})")
 
 	conn.commit()
 	conn.close()

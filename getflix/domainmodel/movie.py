@@ -17,9 +17,8 @@ class Movie:
 		self.movie_review_count = 0
 		self.movie_rating = None
 		self.movie_votes = 0
-		self.movie_ID = None
-		if self.movie_title is not None and self.movie_year is not None:
-			self.movie_ID = self.movie_title.replace(" ", "") + str(self.movie_year)
+		self.movie_code = None
+		self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
 	
 	def __repr__(self):
 		return f"<Movie {self.movie_title}, {self.movie_year}>"
@@ -77,8 +76,8 @@ class Movie:
 		return self.movie_votes
 
 	@property
-	def ID(self):
-		return self.movie_ID
+	def code(self):
+		return self.movie_code
 
 	@property
 	def review_count(self):
@@ -136,10 +135,10 @@ class Movie:
 		if isinstance(newVotes, int):
 			self.movie_votes = newVotes
 
-	@ID.setter
-	def ID(self, newID):
-		self.movie_ID = self.movie_ID  # This value should never be manually changed
-		print("WARNING: Movie IDs cannot be manually reassigned")
+	@code.setter
+	def code(self, newCode):
+		self.movie_code = self.movie_code  # This value should never be manually changed
+		print("WARNING: Codes cannot be manually reassigned")
 
 	@review_count.setter
 	def review_count(self, newCount):

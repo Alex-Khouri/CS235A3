@@ -6,6 +6,7 @@ class Director:
 		else:
 			self.director_name = None
 		self.director_movies = list()
+		self.director_code = "".join([c for c in self.director_name if c.isalnum()])
 	
 	def __repr__(self):
 		return f"<Director {self.director_name}>"
@@ -26,6 +27,10 @@ class Director:
 	@property
 	def movies(self):
 		return self.director_movies
+
+	@property
+	def code(self):
+		return self.director_code
 	
 	@director_full_name.setter
 	def director_full_name(self, newName):
@@ -35,6 +40,11 @@ class Director:
 	def movies(self, newMovies):
 		if isinstance(newMovies, list):
 			self.director_movies = newMovies
+
+	@code.setter
+	def code(self, newCode):
+		self.director_code = self.director_code  # This value should never be manually changed
+		print("WARNING: Codes cannot be manually reassigned")
 
 	def add_movie(self, newMovie):
 		if not newMovie in self.director_movies:

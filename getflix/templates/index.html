@@ -120,41 +120,41 @@
                         <div id="MovieButtons" class="banner" style="display:block; text-align:center">
                             <form action="/add_movie">
                                 <input type="hidden" name="MovieTitle" value="{{ movie.title }}">
-                                <input id="{{ movie.ID|safe }}AddMovie" class="button" type="submit" value="Add to Watchlist">
+                                <input id="{{ movie.code|safe }}AddMovie" class="button" type="submit" value="Add to Watchlist">
                             </form><br>
-                            <input id="{{ movie.ID|safe }}ShowReviews" class="button" type="submit" onclick="toggle(`{{ (movie.ID + 'Reviews')|safe }}`); hide(`{{ (movie.ID + 'ReviewForm')|safe }}`); toggleReviewsButton(`{{ movie.ID|safe }}ShowReviews`)" value="Show Reviews">
-                            <input id="{{ movie.ID|safe }}AddReview" class="button" type="submit" onclick="toggle(`{{ (movie.ID + 'ReviewForm')|safe }}`); hide(`{{ (movie.ID + 'Reviews')|safe }}`);" value="Add Review">
+                            <input id="{{ movie.code|safe }}ShowReviews" class="button" type="submit" onclick="toggle(`{{ (movie.code + 'Reviews')|safe }}`); hide(`{{ (movie.code + 'ReviewForm')|safe }}`); toggleReviewsButton(`{{ movie.code|safe }}ShowReviews`)" value="Show Reviews">
+                            <input id="{{ movie.code|safe }}AddReview" class="button" type="submit" onclick="toggle(`{{ (movie.code + 'ReviewForm')|safe }}`); hide(`{{ (movie.code + 'Reviews')|safe }}`);" value="Add Review">
                         </div><br>
-                        <div id="{{ movie.ID|safe }}AddReview" style="display:flex; justify-content:center">
+                        <div id="{{ movie.code|safe }}AddReview" style="display:flex; justify-content:center">
                         <form action="/add_review">
                             <input type="hidden" name="MovieTitle" value="{{ movie.title }}">
-                            <table id="{{ (movie.ID + 'ReviewForm')|safe }}" style="display:none; align-self:center;">
+                            <table id="{{ (movie.code + 'ReviewForm')|safe }}" style="display:none; align-self:center;">
                                 <tr>
                                     <td class="form-label">
-                                    <label for="{{ movie.ID|safe }}ReviewRating">Rating (1-10): </label>
+                                    <label for="{{ movie.code|safe }}ReviewRating">Rating (1-10): </label>
                                     </td>
                                     <td class="form-input">
-                                    <input id="{{ movie.ID|safe }}ReviewRating" class="textbox" type="number" name="ReviewRating" min=1 max=10 size=6>
+                                    <input id="{{ movie.code|safe }}ReviewRating" class="textbox" type="number" name="ReviewRating" min=1 max=10 size=6>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="form-label">
-                                    <label for="{{ movie.ID|safe }}ReviewComments">Comments: </label>
+                                    <label for="{{ movie.code|safe }}ReviewComments">Comments: </label>
                                     </td>
                                     <td class="form-input">
-                                    <textarea id="{{ movie.ID|safe }}ReviewComments" class="textarea" name="ReviewComments" rows="4" cols=36></textarea>
+                                    <textarea id="{{ movie.code|safe }}ReviewComments" class="textarea" name="ReviewComments" rows="4" cols=36></textarea>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td></td>  <!-- Empty column for formatting -->
                                     <td style="text-align:center">
-                                    <input id="{{ movie.ID|safe }}ReviewSubmit" class="button" type="submit" value="Submit">
+                                    <input id="{{ movie.code|safe }}ReviewSubmit" class="button" type="submit" value="Submit">
                                     </td>
                                 </tr>
                             </table>
                         </form>
                         </div>
-                        <div id="{{ (movie.ID + 'Reviews')|safe }}" style="display:none;">
+                        <div id="{{ (movie.code + 'Reviews')|safe }}" style="display:none;">
                             {% if movie.review_count == 0 %}
                                 <hr style="height:2px; background-color:black; border-color:black; border-radius:2px">
                                 <p style="text-align:center">No reviews to display</p>

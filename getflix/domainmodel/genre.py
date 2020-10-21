@@ -6,6 +6,7 @@ class Genre:
 		else:
 			self.genre_name = None
 		self.genre_movies = list()
+		self.genre_code = "".join([c for c in self.genre_name if c.isalnum()])
 	
 	def __repr__(self):
 		return f"<Genre {self.genre_name}>"
@@ -26,6 +27,10 @@ class Genre:
 	@property
 	def movies(self):
 		return self.genre_movies
+
+	@property
+	def code(self):
+		return self.genre_code
 	
 	@name.setter
 	def name(self, newName):
@@ -35,6 +40,11 @@ class Genre:
 	def movies(self, newMovies):
 		if isinstance(newMovies, list):
 			self.genre_movies = newMovies
+
+	@code.setter
+	def code(self, newCode):
+		self.genre_code = self.genre_code  # This value should never be manually changed
+		print("WARNING: Codes cannot be manually reassigned")
 
 	def add_movie(self, newMovie):
 		if not newMovie in self.genre_movies:

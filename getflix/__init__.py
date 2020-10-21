@@ -39,7 +39,6 @@ def create_app():
 		for table in reversed(metadata.sorted_tables):
 			database_engine.execute(table.delete())
 		map_model_to_tables()
-
 		database_repo.populate(database_engine, data_path)  # ?? Do this before mapping model to tables?
 	else:
 		map_model_to_tables()
