@@ -62,6 +62,9 @@ class Genre:
 		else:
 			return False
 
+	def get_csv_movies(self):
+		return ",".join([movie.code for movie in self.genre_movies])
+
 
 if __name__ == "__main__":
 	from getflix.domainmodel.movie import Movie

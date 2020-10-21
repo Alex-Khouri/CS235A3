@@ -77,6 +77,12 @@ class Actor:
 		else:
 			return False
 
+	def get_csv_movies(self):
+		return ",".join([movie.code for movie in self.actor_movies])
+
+	def get_csv_colleagues(self):
+		return ",".join([actor.code for actor in self.actor_colleagues])
+
 
 if __name__ == "__main__":
 	from getflix.domainmodel.movie import Movie

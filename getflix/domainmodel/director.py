@@ -60,6 +60,9 @@ class Director:
 		else:
 			return False
 
+	def get_csv_movies(self):
+		return ",".join([movie.code for movie in self.director_movies])
+
 
 class TestDirectorMethods:
 

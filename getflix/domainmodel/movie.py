@@ -212,6 +212,12 @@ class Movie:
 	def get_genres_string(self):
 		return ", ".join([genre.name for genre in self.movie_genres])
 
+	def get_csv_actors(self):
+		return ",".join([actor.code for actor in self.movie_actors])
+
+	def get_csv_genres(self):
+		return ",".join([genre.code for genre in self.movie_genres])
+
 
 if __name__ == "__main__":
 	from getflix.domainmodel.actor import Actor

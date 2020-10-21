@@ -18,7 +18,7 @@ def populate(engine, data_path):
 
 	for genre in genres:
 		cursor.execute(f"INSERT INTO genres (name, movies) \
-						VALUES ({genre.name}, {genre.csvMovies})")
+						VALUES ({genre.name}, {genre.get_csv_movies()})")
 
 	conn.commit()
 	conn.close()
