@@ -33,33 +33,36 @@ movies = Table(
 	Column('year', Integer, nullable=False),
 	Column('description', String(1024), nullable=False),
 	Column('director_id', ForeignKey('directors.id')),
-	Column('actors', String(1024), nullable=False),  # CSV string of IDs
-	Column('genres', String(1024), nullable=False),  # CSV string of IDs
+	Column('csvActors', String(1024), nullable=False),  # CSV string of codes
+	Column('csvGenres', String(1024), nullable=False),  # CSV string of codes
 	Column('runtime', Integer, nullable=False),
 	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
 	Column('review_count', Integer, nullable=False),
 	Column('rating', Integer, nullable=False),
 	Column('votes', Integer, nullable=False),
-	Column('codes', String(1024), nullable=False)  # Movie title (without spaces) concatenated with year
+	Column('code', String(255), nullable=False)
 )
 actors = Table(
 	'actors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movies', String(1024), nullable=False),  # CSV string of IDs
-	Column('colleagues', String(1024), nullable=False)  # CSV string of IDs
+	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
+	Column('csvColleagues', String(1024), nullable=False),  # CSV string of codes
+	Column('code', String(255), nullable=False)
 )
 directors = Table(
 	'directors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movies', String(1024), nullable=False)  # CSV string of IDs
+	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
+	Column('code', String(255), nullable=False)
 )
 genres = Table(
 	'genres', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movies', String(1024), nullable=False)  # CSV string of IDs
+	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
+	Column('code', String(255), nullable=False)
 )
 watchlists = Table(
 	'watchlists', metadata,
@@ -97,20 +100,23 @@ def map_model_to_tables():
 		'movie_review_count': movies.c.review_count,
 		'movie_rating': movies.c.rating,
 		'movie_votes': movies.c.votes,
-		'movie_code': movies.c.codes  # Movie title concatenated with year (alphanumeric characters only)
+		'movie_code': movies.c.code
 	})
 	mapper(Actor, actors, properties={
 		'actor_name': actors.c.name,
 		'actor_movies': actors.c.movies,
-		'actor_colleagues': actors.c.colleagues
+		'actor_colleagues': actors.c.colleagues,
+		'actor_code': actors.c.code
 	})
 	mapper(Director, directors, properties={
 		'director_name': directors.c.name,
-		'director_movies': directors.c.movies
+		'director_movies': directors.c.movies,
+		'director_code': directors.c.code
 	})
 	mapper(Genre, genres, properties={
 		'genre_name': genres.c.name,
-		'genre_movies': genres.c.movies
+		'genre_movies': genres.c.movies,
+		'genre_code': genres.c.code
 	})
 	mapper(Watchlist, watchlists, properties={
 		'watchlist_movie_list': watchlists.c.movies

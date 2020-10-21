@@ -6,7 +6,9 @@ class Actor:
 		else:
 			self.actor_name = None
 		self.actor_movies = list()
+		self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
 		self.actor_colleagues = list()
+		self.actor_csvColleagues = ",".join([actor.code for actor in self.actor_colleagues])
 		self.actor_code = "".join([c for c in self.actor_name if c.isalnum()])
 	
 	def __repr__(self):
@@ -36,6 +38,14 @@ class Actor:
 	@property
 	def code(self):
 		return self.actor_code
+
+	@property
+	def csvMovies(self):
+		return self.actor_csvMovies
+
+	@property
+	def csvColleagues(self):
+		return self.actor_csvColleagues
 	
 	@actor_full_name.setter
 	def actor_full_name(self, newName):
@@ -51,18 +61,27 @@ class Actor:
 		if isinstance(newColleagues, list):
 			self.actor_colleagues = newColleagues
 
+	@csvMovies.setter
+	def csvMovies(self, new):
+		print("WARNING: csvMovies cannot be manually reassigned")
+
+	@csvColleagues.setter
+	def csvColleagues(self, new):
+		print("WARNING: csvColleagues cannot be manually reassigned")
+
 	@code.setter
-	def code(self, newCode):
-		self.actor_code = self.actor_code  # This value should never be manually changed
+	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
 		
 	def add_actor_colleague(self, colleague):
 		self.actor_colleagues.append(colleague)
+		self.actor_csvColleagues = ",".join([actor.code for actor in self.actor_colleagues])
 		colleague.colleagues.append(self)
 
 	def add_movie(self, newMovie):
 		if newMovie not in self.actor_movies:
 			self.actor_movies.append(newMovie)
+			self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
 			return True
 		else:
 			return False
@@ -73,15 +92,10 @@ class Actor:
 	def remove_movie(self, remMovie):
 		if remMovie in self.actor_movies:
 			self.actor_movies.remove(remMovie)
+			self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
 			return True
 		else:
 			return False
-
-	def get_csv_movies(self):
-		return ",".join([movie.code for movie in self.actor_movies])
-
-	def get_csv_colleagues(self):
-		return ",".join([actor.code for actor in self.actor_colleagues])
 
 
 if __name__ == "__main__":

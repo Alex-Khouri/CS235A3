@@ -6,6 +6,7 @@ class Director:
 		else:
 			self.director_name = None
 		self.director_movies = list()
+		self.director_csvMovies = ",".join([movie.code for movie in self.director_movies])
 		self.director_code = "".join([c for c in self.director_name if c.isalnum()])
 	
 	def __repr__(self):
@@ -31,6 +32,10 @@ class Director:
 	@property
 	def code(self):
 		return self.director_code
+
+	@property
+	def csvMovies(self):
+		return self.director_csvMovies
 	
 	@director_full_name.setter
 	def director_full_name(self, newName):
@@ -42,13 +47,17 @@ class Director:
 			self.director_movies = newMovies
 
 	@code.setter
-	def code(self, newCode):
-		self.director_code = self.director_code  # This value should never be manually changed
+	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
+
+	@csvMovies.setter
+	def csvMovies(self, new):
+		print("WARNING: csvMovies cannot be manually reassigned")
 
 	def add_movie(self, newMovie):
 		if not newMovie in self.director_movies:
 			self.director_movies.append(newMovie)
+			self.director_csvMovies = ",".join([movie.code for movie in self.director_movies])
 			return True
 		else:
 			return False
@@ -56,23 +65,10 @@ class Director:
 	def remove_movie(self, remMovie):
 		if remMovie in self.director_movies:
 			self.director_movies.remove(remMovie)
+			self.director_csvMovies = ",".join([movie.code for movie in self.director_movies])
 			return True
 		else:
 			return False
-
-	def get_csv_movies(self):
-		return ",".join([movie.code for movie in self.director_movies])
-
-
-class TestDirectorMethods:
-
-	def test_init(self):
-		director1 = Director("Taika Waititi")
-		assert repr(director1) == "<Director Taika Waititi>"
-		director2 = Director("")
-		assert director2.director_full_name is None
-		director3 = Director(42)
-		assert director3.director_full_name is None
 
 
 if __name__ == "__main__":

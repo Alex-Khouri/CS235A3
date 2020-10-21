@@ -64,8 +64,7 @@ class Review:
 		self.review_user = newUser
 
 	@date.setter
-	def date(self, newDate):
-		self.review_date = self.review_date  # This value should never be manually changed
+	def date(self, new):
 		print("WARNING: Review dates cannot be manually reassigned")
 
 
