@@ -10,16 +10,16 @@ class Movie:
 			self.movie_year = movYear
 		self.movie_description = None
 		self.movie_director = None
+		self.movie_director_code = ""
 		self.movie_actors = list()
-		self.movie_csvActors = ",".join([actor.code for actor in self.movie_actors])
+		self.movie_actor_codes = ""
 		self.movie_genres = list()
-		self.movie_csvGenres = ",".join([genre.code for genre in self.movie_genres])
+		self.movie_genre_codes = ""
 		self.movie_runtime_minutes = 0
 		self.movie_reviews = list()
 		self.movie_review_count = 0
 		self.movie_rating = None
 		self.movie_votes = 0
-		self.movie_code = None
 		self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
 	
 	def __repr__(self):
@@ -86,22 +86,28 @@ class Movie:
 		return self.movie_review_count
 
 	@property
-	def csvActors(self):
-		return self.movie_csvActors
+	def actor_codes(self):
+		return self.movie_actor_codes
 
 	@property
-	def csvGenres(self):
-		return self.movie_csvGenres
+	def genre_codes(self):
+		return self.movie_genre_codes
+
+	@property
+	def director_code(self):
+		return self.movie_director_code
 
 	@title.setter
 	def title(self, newTitle):
 		if isinstance(newTitle, str) and len(newTitle) > 0:
 			self.movie_title = newTitle.strip()
+			self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
 
 	@year.setter
 	def year(self, newYear):
 		if isinstance(newYear, int) and newYear >= 1900:
 			self.movie_year = newYear
+			self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
 
 	@description.setter
 	def description(self, newDescrip):
@@ -111,16 +117,19 @@ class Movie:
 	@director.setter
 	def director(self, newDirector):
 		self.movie_director = newDirector
+		self.movie_director_code = self.movie_director.code
 			
 	@actors.setter
 	def actors(self, newActors):
 		if isinstance(newActors, list):
 			self.movie_actors = newActors
+			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 			
 	@genres.setter
 	def genres(self, newGenres):
 		if isinstance(newGenres, list):
 			self.movie_genres = newGenres
+			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
 			
 	@runtime_minutes.setter
 	def runtime_minutes(self, newRuntime):
@@ -153,18 +162,22 @@ class Movie:
 	def review_count(self, new):
 		print("WARNING: Movie review counts cannot be manually reassigned")
 
-	@csvActors.setter
-	def csvActors(self, new):
-		print("WARNING: csvActors cannot be manually reassigned")
+	@actor_codes.setter
+	def actor_codes(self, new):
+		print("WARNING: actor_codes cannot be manually reassigned")
 
-	@csvGenres.setter
-	def csvGenres(self, new):
-		print("WARNING: csvGenres cannot be manually reassigned")
+	@genre_codes.setter
+	def genre_codes(self, new):
+		print("WARNING: genre_codes cannot be manually reassigned")
+
+	@director_code.setter
+	def director_code(self, new):
+		print("WARNING: director_code cannot be manually reassigned")
 
 	def add_actor(self, newActor):
 		if not newActor in self.movie_actors:
 			self.movie_actors.append(newActor)
-			self.movie_csvActors = ",".join([actor.code for actor in self.movie_actors])
+			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 			return True
 		else:
 			return False
@@ -172,7 +185,7 @@ class Movie:
 	def add_genre(self, newGenre):
 		if not newGenre in self.movie_genres:
 			self.movie_genres.append(newGenre)
-			self.movie_csvGenres = ",".join([genre.code for genre in self.movie_genres])
+			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
 			return True
 		else:
 			return False
@@ -190,13 +203,13 @@ class Movie:
 	def remove_actor(self, remActor):
 		if remActor in self.movie_actors:
 			self.movie_actors.remove(remActor)
-			self.movie_csvActors = ",".join([actor.code for actor in self.movie_actors])
+			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 			return True
 		elif isinstance(remActor, str):
 			for actor in self.movie_actors:
 				if actor.actor_full_name == remActor:
 					self.movie_actors.remove(actor)
-					self.movie_csvActors = ",".join([actor.code for actor in self.movie_actors])
+					self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 					return True
 		else:
 			return False
@@ -204,13 +217,13 @@ class Movie:
 	def remove_genre(self, remGenre):
 		if remGenre in self.movie_genres:
 			self.movie_genres.remove(remGenre)
-			self.movie_csvGenres = ",".join([genre.code for genre in self.movie_genres])
+			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
 			return True
 		elif isinstance(remGenre, str):
 			for genre in self.movie_genres:
 				if genre.name == remGenre:
 					self.movie_genres.remove(genre)
-					self.movie_csvGenres = ",".join([genre.code for genre in self.movie_genres])
+					self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
 					return True
 		else:
 			return False

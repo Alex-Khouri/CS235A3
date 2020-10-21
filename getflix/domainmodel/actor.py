@@ -6,9 +6,9 @@ class Actor:
 		else:
 			self.actor_name = None
 		self.actor_movies = list()
-		self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
+		self.actor_movie_codes = ""
 		self.actor_colleagues = list()
-		self.actor_csvColleagues = ",".join([actor.code for actor in self.actor_colleagues])
+		self.actor_colleague_codes = ""
 		self.actor_code = "".join([c for c in self.actor_name if c.isalnum()])
 	
 	def __repr__(self):
@@ -40,16 +40,17 @@ class Actor:
 		return self.actor_code
 
 	@property
-	def csvMovies(self):
-		return self.actor_csvMovies
+	def movie_codes(self):
+		return self.actor_movie_codes
 
 	@property
-	def csvColleagues(self):
-		return self.actor_csvColleagues
+	def colleague_codes(self):
+		return self.actor_colleague_codes
 	
 	@actor_full_name.setter
 	def actor_full_name(self, newName):
 		self.actor_name = newName
+		self.actor_code = "".join([c for c in self.actor_name if c.isalnum()])
 
 	@movies.setter
 	def movies(self, newMovies):
@@ -61,13 +62,13 @@ class Actor:
 		if isinstance(newColleagues, list):
 			self.actor_colleagues = newColleagues
 
-	@csvMovies.setter
-	def csvMovies(self, new):
-		print("WARNING: csvMovies cannot be manually reassigned")
+	@movie_codes.setter
+	def movie_codes(self, new):
+		print("WARNING: movie_codes cannot be manually reassigned")
 
-	@csvColleagues.setter
-	def csvColleagues(self, new):
-		print("WARNING: csvColleagues cannot be manually reassigned")
+	@colleague_codes.setter
+	def colleague_codes(self, new):
+		print("WARNING: colleague_codes cannot be manually reassigned")
 
 	@code.setter
 	def code(self, new):
@@ -75,13 +76,13 @@ class Actor:
 		
 	def add_actor_colleague(self, colleague):
 		self.actor_colleagues.append(colleague)
-		self.actor_csvColleagues = ",".join([actor.code for actor in self.actor_colleagues])
+		self.actor_colleague_codes = ",".join([actor.code for actor in self.actor_colleagues])
 		colleague.colleagues.append(self)
 
 	def add_movie(self, newMovie):
 		if newMovie not in self.actor_movies:
 			self.actor_movies.append(newMovie)
-			self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
+			self.actor_movie_codes = ",".join([movie.code for movie in self.actor_movies])
 			return True
 		else:
 			return False
@@ -92,7 +93,7 @@ class Actor:
 	def remove_movie(self, remMovie):
 		if remMovie in self.actor_movies:
 			self.actor_movies.remove(remMovie)
-			self.actor_csvMovies = ",".join([movie.code for movie in self.actor_movies])
+			self.actor_movie_codes = ",".join([movie.code for movie in self.actor_movies])
 			return True
 		else:
 			return False

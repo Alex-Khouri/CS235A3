@@ -5,7 +5,9 @@ from sqlalchemy.orm import mapper, relationship
 
 metadata = MetaData()
 
-# Lists of objects are stored as CSV strings of primary key IDs
+# Lists of objects are stored as CSV strings
+# CSV strings for Movies, Actors, Directors, and Genres contain domain model codes (names begin with 'csv')
+# CSV strings for all other objects contain Primary Key IDs from tables
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
@@ -32,9 +34,9 @@ movies = Table(
 	Column('title', String(255), nullable=False),
 	Column('year', Integer, nullable=False),
 	Column('description', String(1024), nullable=False),
-	Column('director_id', ForeignKey('directors.id')),
-	Column('csvActors', String(1024), nullable=False),  # CSV string of codes
-	Column('csvGenres', String(1024), nullable=False),  # CSV string of codes
+	Column('director_code', String(255), nullable=False),
+	Column('actor_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('genre_codes', String(1024), nullable=False),  # CSV string of codes
 	Column('runtime', Integer, nullable=False),
 	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
 	Column('review_count', Integer, nullable=False),
@@ -46,22 +48,22 @@ actors = Table(
 	'actors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
-	Column('csvColleagues', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('colleague_codes', String(1024), nullable=False),  # CSV string of codes
 	Column('code', String(255), nullable=False)
 )
 directors = Table(
 	'directors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
 	Column('code', String(255), nullable=False)
 )
 genres = Table(
 	'genres', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('csvMovies', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
 	Column('code', String(255), nullable=False)
 )
 watchlists = Table(
@@ -92,9 +94,9 @@ def map_model_to_tables():
 		'movie_title': movies.c.title,
 		'movie_year': movies.c.year,
 		'movie_description': movies.c.description,
-		'movie_director': relationship(Director, backref='director_movies'),
-		'movie_actors': movies.c.actors,
-		'movie_genres': movies.c.genres,
+		'movie_director_code': movies.c.director_code,
+		'movie_actor_codes': movies.c.actor_codes,
+		'movie_genre_codes': movies.c.genre_codes,
 		'movie_runtime_minutes': movies.c.runtime,
 		'movie_reviews': movies.c.reviews,
 		'movie_review_count': movies.c.review_count,
@@ -104,18 +106,18 @@ def map_model_to_tables():
 	})
 	mapper(Actor, actors, properties={
 		'actor_name': actors.c.name,
-		'actor_movies': actors.c.movies,
-		'actor_colleagues': actors.c.colleagues,
+		'actor_movie_codes': actors.c.movie_codes,
+		'actor_colleague_codes': actors.c.colleague_codes,
 		'actor_code': actors.c.code
 	})
 	mapper(Director, directors, properties={
 		'director_name': directors.c.name,
-		'director_movies': directors.c.movies,
+		'director_movie_codes': directors.c.movie_codes,
 		'director_code': directors.c.code
 	})
 	mapper(Genre, genres, properties={
 		'genre_name': genres.c.name,
-		'genre_movies': genres.c.movies,
+		'genre_movie_codes': genres.c.movie_codes,
 		'genre_code': genres.c.code
 	})
 	mapper(Watchlist, watchlists, properties={

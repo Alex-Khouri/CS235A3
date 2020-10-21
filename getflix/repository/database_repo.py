@@ -8,18 +8,27 @@ from werkzeug.security import generate_password_hash
 def populate(engine, data_path):
 	conn = engine.raw_connection()
 	cursor = conn.cursor()
-
 	csvReader = MovieFileCSVReader(data_path)
 	csvReader.read_csv_file()
 	genres = csvReader.dataset_of_genres
 	actors = csvReader.dataset_of_actors
 	directors = csvReader.dataset_of_directors
 	movies = csvReader.dataset_of_movies
-
 	for genre in genres:
-		cursor.execute(f"INSERT INTO genres (name, movies) \
-						VALUES ({genre.name}, {genre.get_csv_movies()})")
-
+		cursor.execute(f"INSERT INTO genres (name, movie_codes, code) \
+						VALUES ({genre.name}, {genre.movie_codes}, {genre.code})")
+	for actor in actors:
+		cursor.execute(f"INSERT INTO actors (name, movie_codes, colleague_codes, code) \
+						VALUES ({actor.name}, {actor.movie_codes}, {actor.colleague_codes}, {actor.code})")
+	for director in directors:
+		cursor.execute(f"INSERT INTO directors (name, movie_codes, code) \
+						VALUES ({director.name}, {director.movie_codes}, {director.code})")
+	for movie in movies:
+		cursor.execute(f"INSERT INTO movies (title, year, description, director_code, actor_codes, \
+						genre_codes, runtime, reviews, review_count, rating, votes, code) \
+						VALUES ({movie.title}, {movie.year}, {movie.description}, {movie.director_code}, \
+						{movie.actor_codes}, {movie.genre_codes}, {movie.runtime}, {movie.reviews}, \
+						{movie.review_count}, {movie.rating}, {movie.votes}, {movie.code})")
 	conn.commit()
 	conn.close()
 
@@ -52,6 +61,11 @@ class SessionContextManager:
 	def close(self):
 		if not self.__session is None:
 			self.__session.close()
+
+	def execute(self, query):
+		self.__session.execute(query)
+		self.__session.commit()
+		self.__session.close()
 
 
 class DatabaseRepo:

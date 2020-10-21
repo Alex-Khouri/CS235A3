@@ -6,7 +6,7 @@ class Genre:
 		else:
 			self.genre_name = None
 		self.genre_movies = list()
-		self.genre_csvMovies = ",".join([movie.code for movie in self.genre_movies])
+		self.genre_movie_codes = ""
 		self.genre_code = "".join([c for c in self.genre_name if c.isalnum()])
 	
 	def __repr__(self):
@@ -34,12 +34,13 @@ class Genre:
 		return self.genre_code
 
 	@property
-	def csvMovies(selfs):
-		return self.genre_csvMovies
+	def movie_codes(self):
+		return self.genre_movie_codes
 	
 	@name.setter
 	def name(self, newName):
 		self.genre_name = newName
+		self.genre_code = "".join([c for c in self.genre_name if c.isalnum()])
 
 	@movies.setter
 	def movies(self, newMovies):
@@ -50,14 +51,14 @@ class Genre:
 	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
 
-	@csvMovies.setter
-	def csvMovies(self, new):
-		print("WARNING: csvMovies cannot be manually reassigned")
+	@movie_codes.setter
+	def movie_codes(self, new):
+		print("WARNING: movie_codes cannot be manually reassigned")
 
 	def add_movie(self, newMovie):
 		if not newMovie in self.genre_movies:
 			self.genre_movies.append(newMovie)
-			self.genre_csvMovies = ",".join([movie.code for movie in self.genre_movies])
+			self.genre_movie_codes = ",".join([movie.code for movie in self.genre_movies])
 			newMovie.add_genre(self)
 			return True
 		else:
@@ -66,7 +67,7 @@ class Genre:
 	def remove_movie(self, remMovie):
 		if remMovie in self.genre_movies:
 			self.genre_movies.remove(remMovie)
-			self.genre_csvMovies = ",".join([movie.code for movie in self.genre_movies])
+			self.genre_movie_codes = ",".join([movie.code for movie in self.genre_movies])
 			remMovie.remove_genre(self)
 			return True
 		else:
