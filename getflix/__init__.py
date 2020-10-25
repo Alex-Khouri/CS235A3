@@ -29,7 +29,7 @@ def create_app():
 	#  		filteredMovies, currWatchlist, watchlistSize
 
 	data_path = 'getflix/datafiles/Data1000Movies.csv'
-	database_path = 'getflix/repository/getflix_database.db'
+	database_path = 'sqlite:///getflix/repository/getflix_database.db'
 	database_engine = create_engine(database_path, connect_args={"check_same_thread": False}, poolclass=NullPool, echo=True)
 	session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
 	repo = DatabaseRepo(session_factory)
@@ -40,6 +40,7 @@ def create_app():
 			database_engine.execute(table.delete())
 		map_model_to_tables()
 		database_repo.populate(database_engine, data_path)  # ?? Do this before mapping model to tables?
+		print("***DEBUGGING: DATABASE POPULATION COMPLETE")
 	else:
 		map_model_to_tables()
 
