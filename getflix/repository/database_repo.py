@@ -16,18 +16,18 @@ def populate(engine, data_path):
 	movies = csvReader.dataset_of_movies
 	for genre in genres:
 		cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
-						VALUES (\"{genre.name}\", \"{genre.movie_codes}\", \"{genre.code}\")""")
+						VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
 	for actor in actors:
 		cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
-						VALUES (\"{actor.actor_full_name}\", \"{actor.movie_codes}\",
-								\"{actor.colleague_codes}\", \"{actor.code}\")""")
+						VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
+								"{actor.colleague_codes}", "{actor.code}")""")
 	for director in directors:
 		cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)
-						VALUES (\"{director.director_full_name}\", \"{director.movie_codes}\",
-								\"{director.code}\")""")
+						VALUES ("{director.director_full_name}", "{director.movie_codes}",
+								"{director.code}")""")
 	for movie in movies:
 		print(f"BEFORE STRING PROCESSING: {movie.description}")
-		movie_description = repr(movie.description).replace('"', '_').replace("'", "_")
+		movie_description = repr(movie.description)
 		print(f"AFTER STRING PROCESSING: {movie_description}")
 		print("--------------------")
 		cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
