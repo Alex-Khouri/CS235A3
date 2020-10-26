@@ -44,6 +44,11 @@ def create_app():
 	else:
 		map_model_to_tables()
 
+	# # *** DEBUGGING START ***
+	# remove("getflix/repository/getflix_database.db")
+	# print("*** DEBUGGING: 'getflix_database.db' deleted after database initialisation")
+	# # *** DEBUGGING END ***
+
 	servData = {
 		"titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
 		"allMovies": repo.movies,
@@ -52,10 +57,6 @@ def create_app():
 		"allGenres": sorted(list(repo.genres)),
 		"allUsers": repo.users
 	}
-
-	# # *** DEBUGGING START ***
-	# remove("getflix/repository/getflix_database.db")
-	# # *** DEBUGGING END ***
 
 	def is_valid_password(password):
 		if len(password) > 7:

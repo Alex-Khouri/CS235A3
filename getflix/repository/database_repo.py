@@ -27,7 +27,7 @@ def populate(engine, data_path):
 								\"{director.code}\")""")
 	for movie in movies:
 		print(f"BEFORE STRING PROCESSING: {movie.description}")
-		movie_description = repr(movie.description).replace("\\", "\\\\")
+		movie_description = repr(movie.description).replace('"', '_').replace("'", "_")
 		print(f"AFTER STRING PROCESSING: {movie_description}")
 		print("--------------------")
 		cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
