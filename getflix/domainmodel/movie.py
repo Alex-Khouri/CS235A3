@@ -18,6 +18,7 @@ class Movie:
 		self.movie_runtime_minutes = 0
 		self.movie_reviews = list()
 		self.movie_review_count = 0
+		self.movie_review_codes = ""
 		self.movie_rating = None
 		self.movie_votes = 0
 		self.movie_code = str(hash(self.movie_title + str(self.movie_year)))
@@ -82,6 +83,10 @@ class Movie:
 		return self.movie_code
 
 	@property
+	def review_codes(self):
+		return self.review_codes
+
+	@property
 	def review_count(self):
 		return self.movie_review_count
 
@@ -144,6 +149,14 @@ class Movie:
 		if isinstance(newReviews, list):
 			self.movie_reviews = newReviews
 
+	@review_count.setter
+	def review_count(self, new):
+		print("WARNING: Movie review counts cannot be manually reassigned")
+
+	@review_codes.setter
+	def review_codes(self, new):
+		print("WARNING: review_codes cannot be manually reassigned")
+
 	@rating.setter
 	def rating(self, newRating):
 		if isinstance(newRating, float):
@@ -157,10 +170,6 @@ class Movie:
 	@code.setter
 	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
-
-	@review_count.setter
-	def review_count(self, new):
-		print("WARNING: Movie review counts cannot be manually reassigned")
 
 	@actor_codes.setter
 	def actor_codes(self, new):
@@ -192,6 +201,7 @@ class Movie:
 
 	def add_review(self, newReview):
 		self.movie_reviews.append(newReview)
+		self.movie_review_codes = ",".join([review.code for review in self.movie_reviews])
 		self.movie_review_count += 1
 		self.movie_votes += 1
 		v = self.movie_votes
