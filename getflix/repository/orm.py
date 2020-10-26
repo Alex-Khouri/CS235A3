@@ -49,7 +49,7 @@ movies = Table(
 	Column('runtime', Integer, nullable=False),
 	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
 	Column('review_count', Integer, nullable=False),
-	Column('rating', Integer, nullable=False),
+	Column('rating', String(1024), nullable=False),
 	Column('votes', Integer, nullable=False),
 	Column('code', String(255), nullable=False)
 )
