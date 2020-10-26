@@ -7,8 +7,9 @@ class User:
 		self.user_password = userPassword if isinstance(userPassword, str) else None
 		self.user_watched = list()
 		self.user_reviews = list()
-		self.user_watchlist = Watchlist()
 		self.user_timewatching = 0
+		self.user_code = str(hash(self.user_username))
+		self.user_watchlist = Watchlist(self.user_code)
 
 	def __repr__(self):
 		return f"<User {self.user_username}>"
@@ -47,8 +48,8 @@ class User:
 		return self.user_timewatching
 
 	@property
-	def comments(self):
-		return self.user_comments
+	def code(self):
+		return self.user_code
 
 	@username.setter
 	def username(self, newName):
@@ -74,15 +75,14 @@ class User:
 	def watchlist(self, newWatchlist):
 		self.user_watchlist = newWatchlist
 
-	@comments.setter
-	def comments(self, newComments):
-		if isinstance(newComments, list):
-			self.user_comments = newComments
-
 	@time_spent_watching_movies_minutes.setter
 	def time_spent_watching_movies_minutes(self, newTimeWatching):
 		if isinstance(newTimeWatching, int):
 			self.user_timewatching = newTimeWatching
+
+	@code.setter
+	def code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 	def watch_movie(self, movie):
 		if not movie in self.user_watched:

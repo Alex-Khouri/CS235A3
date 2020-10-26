@@ -1,8 +1,9 @@
 
 
 class Watchlist:
-	def __init__(self):
+	def __init__(self, user_code):
 		self.watchlist_movie_list = list()
+		self.watchlist_user_code = user_code
 		self.iterIndex = 0
 
 	def __repr__(self):
@@ -23,10 +24,18 @@ class Watchlist:
 	def movie_list(self):
 		return self.watchlist_movie_list
 
+	@property
+	def user_code(self):
+		return self.watchlist_user_code
+
 	@movie_list.setter
 	def movie_list(self, newMovieList):
 		if isinstance(newMovieList, list):
 			self.watchlist_movie_list = newMovieList
+
+	@user_code.setter
+	def user_code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 	def add_movie(self, movie):
 		if movie not in self.watchlist_movie_list:

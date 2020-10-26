@@ -15,20 +15,17 @@ def populate(engine, data_path):
 	directors = csvReader.dataset_of_directors
 	movies = csvReader.dataset_of_movies
 	for genre in genres:
-		cursor.execute(f"INSERT INTO genres (name, movie_codes, code) \
-						VALUES ({genre.name}, {genre.movie_codes}, {genre.code})")
+		values = f"({genre.name}, {genre.movie_codes}, {genre.code})"
+		cursor.execute(f"INSERT INTO genres (name, movie_codes, code) VALUES {values}")
 	for actor in actors:
-		cursor.execute(f"INSERT INTO actors (name, movie_codes, colleague_codes, code) \
-						VALUES ({actor.name}, {actor.movie_codes}, {actor.colleague_codes}, {actor.code})")
+		values = f"({actor.actor_full_name}, {actor.movie_codes}, {actor.colleague_codes}, {actor.code})"
+		cursor.execute(f"INSERT INTO actors (name, movie_codes, colleague_codes, code) VALUES {values}")
 	for director in directors:
-		cursor.execute(f"INSERT INTO directors (name, movie_codes, code) \
-						VALUES ({director.name}, {director.movie_codes}, {director.code})")
+		values = f"({director.director_full_name}, {director.movie_codes}, {director.code})"
+		cursor.execute(f"INSERT INTO directors (name, movie_codes, code) VALUES {values}")
 	for movie in movies:
-		cursor.execute(f"INSERT INTO movies (title, year, description, director_code, actor_codes, \
-						genre_codes, runtime, reviews, review_count, rating, votes, code) \
-						VALUES ({movie.title}, {movie.year}, {movie.description}, {movie.director_code}, \
-						{movie.actor_codes}, {movie.genre_codes}, {movie.runtime}, {movie.reviews}, \
-						{movie.review_count}, {movie.rating}, {movie.votes}, {movie.code})")
+		values = f"({movie.title}, {movie.year}, {movie.description}, {movie.director_code}, {movie.actor_codes}, {movie.genre_codes}, {movie.runtime}, {movie.reviews}, {movie.review_count}, {movie.rating}, {movie.votes}, {movie.code})"
+		cursor.execute(f"INSERT INTO movies (title, year, description, director_code, actor_codes, genre_codes, runtime, reviews, review_count, rating, votes, code) VALUES ")
 	conn.commit()
 	conn.close()
 

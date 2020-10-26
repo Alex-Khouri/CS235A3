@@ -9,6 +9,7 @@ class Review:
 		self.review_rating = revRating if (isinstance(revRating, int) and (revRating in range(1, 11))) else None
 		self.review_timestamp = datetime.now()
 		self.review_date = str(self.review_timestamp).split(' ')[0]
+		self.review_code = str(hash(self.review_user.username + self.review_timestamp))
 
 	def __repr__(self):
 		return f"<Review {self.review_movie}, {self.review_rating}, {self.review_timestamp}, '{self.review_text}'>"
@@ -40,6 +41,10 @@ class Review:
 	def date(self):
 		return self.review_date
 
+	@property
+	def code(self):
+		return self.review_code
+
 	@movie.setter
 	def movie(self, newMovie):
 		self.review_movie = newMovie
@@ -66,6 +71,10 @@ class Review:
 	@date.setter
 	def date(self, new):
 		print("WARNING: Review dates cannot be manually reassigned")
+
+	@code.setter
+	def code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 
 if __name__ == "__main__":

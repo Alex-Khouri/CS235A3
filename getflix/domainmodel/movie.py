@@ -20,7 +20,7 @@ class Movie:
 		self.movie_review_count = 0
 		self.movie_rating = None
 		self.movie_votes = 0
-		self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
+		self.movie_code = str(hash(self.movie_title + str(self.movie_year)))
 	
 	def __repr__(self):
 		return f"<Movie {self.movie_title}, {self.movie_year}>"
@@ -101,13 +101,13 @@ class Movie:
 	def title(self, newTitle):
 		if isinstance(newTitle, str) and len(newTitle) > 0:
 			self.movie_title = newTitle.strip()
-			self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
+			self.movie_code = str(hash(self.movie_title + self.movie_year))
 
 	@year.setter
 	def year(self, newYear):
 		if isinstance(newYear, int) and newYear >= 1900:
 			self.movie_year = newYear
-			self.movie_code = "".join([c for c in (self.movie_title + str(self.movie_year)) if c.isalnum()])
+			self.movie_code = str(hash(self.movie_title + str(self.movie_year)))
 
 	@description.setter
 	def description(self, newDescrip):

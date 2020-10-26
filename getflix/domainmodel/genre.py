@@ -7,7 +7,7 @@ class Genre:
 			self.genre_name = None
 		self.genre_movies = list()
 		self.genre_movie_codes = ""
-		self.genre_code = "".join([c for c in self.genre_name if c.isalnum()])
+		self.genre_code = str(hash(self.genre_name))
 	
 	def __repr__(self):
 		return f"<Genre {self.genre_name}>"
@@ -40,7 +40,7 @@ class Genre:
 	@name.setter
 	def name(self, newName):
 		self.genre_name = newName
-		self.genre_code = "".join([c for c in self.genre_name if c.isalnum()])
+		self.genre_code = str(hash(self.genre_name))
 
 	@movies.setter
 	def movies(self, newMovies):

@@ -7,7 +7,7 @@ class Director:
 			self.director_name = None
 		self.director_movies = list()
 		self.director_movie_codes = ""
-		self.director_code = "".join([c for c in self.director_name if c.isalnum()])
+		self.director_code = str(hash(self.director_name))
 	
 	def __repr__(self):
 		return f"<Director {self.director_name}>"
@@ -40,7 +40,7 @@ class Director:
 	@director_full_name.setter
 	def director_full_name(self, newName):
 		self.director_name = newName
-		self.director_code = "".join([c for c in self.director_name if c.isalnum()])
+		self.director_code = str(hash(self.director_name))
 
 	@movies.setter
 	def movies(self, newMovies):
