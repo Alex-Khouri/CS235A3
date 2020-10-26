@@ -17,6 +17,7 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 from sqlalchemy.pool import NullPool
 
 import sqlite3
+from os import remove
 
 
 def create_app():
@@ -40,9 +41,12 @@ def create_app():
 			database_engine.execute(table.delete())
 		map_model_to_tables()
 		database_repo.populate(database_engine, data_path)  # ?? Do this before mapping model to tables?
-		print("***DEBUGGING: DATABASE POPULATION COMPLETE")
 	else:
 		map_model_to_tables()
+
+	# # *** DEBUGGING START ***
+	# remove("getflix/repository/getflix_database.db")
+	# # *** DEBUGGING END ***
 
 	servData = {
 		"titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],

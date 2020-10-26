@@ -13,10 +13,10 @@ class Director:
 		return f"<Director {self.director_name}>"
 	
 	def __eq__(self, other):
-		return self.__class__ == other.__class__ and self.director_name == other.name
+		return self.__class__ == other.__class__ and self.director_name == other.director_full_name
 	
 	def __lt__(self, other):
-		return self.director_name < other.name
+		return self.director_name < other.director_full_name
 	
 	def __hash__(self):
 		return hash(self.director_name)

@@ -76,7 +76,7 @@ class MovieFileCSVReader:
 					self.actors.update(set(actors))
 					self.directors.add(director)
 					self.genres.update(set(genres))
-				except:
+				except Exception as err:
 					continue  # Skips movies with invalid formatting
 			csvfile.close()
 		except:

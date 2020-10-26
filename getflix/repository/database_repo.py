@@ -17,7 +17,6 @@ def populate(engine, data_path):
 	for genre in genres:
 		cursor.execute(f"INSERT INTO genres (name, movie_codes, code) \
 						VALUES ({genre.name}, {genre.movie_codes}, {genre.code})")
-		print("***REACHED")
 	for actor in actors:
 		cursor.execute(f"INSERT INTO actors (name, movie_codes, colleague_codes, code) \
 						VALUES ({actor.name}, {actor.movie_codes}, {actor.colleague_codes}, {actor.code})")

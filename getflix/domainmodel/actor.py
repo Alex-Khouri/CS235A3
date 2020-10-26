@@ -15,10 +15,10 @@ class Actor:
 		return f"<Actor {self.actor_name}>"
 	
 	def __eq__(self, other):
-		return self.__class__ == other.__class__ and self.actor_name == other.name
+		return self.__class__ == other.__class__ and self.actor_name == other.actor_full_name
 	
 	def __lt__(self, other):
-		return self.actor_name < other.name
+		return self.actor_name < other.actor_full_name
 	
 	def __hash__(self):
 		return hash(self.actor_name)
