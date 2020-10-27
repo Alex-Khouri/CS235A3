@@ -26,13 +26,10 @@ def populate(engine, data_path):
 						VALUES ("{director.director_full_name}", "{director.movie_codes}",
 								"{director.code}")""")
 	for movie in movies:
-		print(f"BEFORE STRING PROCESSING: {movie.description}")
-		movie_description = repr(movie.description)
-		print(f"AFTER STRING PROCESSING: {movie_description}")
-		print("--------------------")
+		movie_description = movie.description.replace("\"", "'")  # Potentially find a way to retain double-quotes?
 		cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
 						genre_codes, runtime, reviews, review_count, rating, votes, code)
-						VALUES ("{movie.title}", {movie.year}, {movie_description},
+						VALUES ("{movie.title}", {movie.year}, "{movie_description}",
 								"{movie.director_code}", "{movie.actor_codes}", "{movie.genre_codes}",
 								{movie.runtime_minutes}, "{movie.reviews}", {movie.review_count},
 								"{movie.rating}", {movie.votes}, "{movie.code}")""")
@@ -79,6 +76,11 @@ class DatabaseRepo:
 
 	def __init__(self, session_factory):
 		self.session_manager = SessionContextManager(session_factory)
+		self.repo_movies = None
+		self.repo_actors = None
+		self.repo_directors = None
+		self.repo_genres = None
+		self.repo_users = None
 
 	@property
 	def movies(self):

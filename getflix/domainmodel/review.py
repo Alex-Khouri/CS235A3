@@ -9,7 +9,7 @@ class Review:
 		self.review_rating = revRating if (isinstance(revRating, int) and (revRating in range(1, 11))) else None
 		self.review_timestamp = datetime.now()
 		self.review_date = str(self.review_timestamp).split(' ')[0]
-		self.review_code = str(hash(self.review_user.username + self.review_timestamp))
+		self.review_code = str(hash(self.review_user.username + self.review_movie.title + self.review_timestamp))
 
 	def __repr__(self):
 		return f"<Review {self.review_movie}, {self.review_rating}, {self.review_timestamp}, '{self.review_text}'>"

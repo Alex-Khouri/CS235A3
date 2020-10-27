@@ -16,8 +16,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 from sqlalchemy.pool import NullPool
 
-import sqlite3
-from os import remove
+import sqlite3  # Use this instead of SQLAlchemy as a contingency
 
 
 def create_app():
@@ -40,14 +39,9 @@ def create_app():
 		for table in reversed(metadata.sorted_tables):
 			database_engine.execute(table.delete())
 		map_model_to_tables()
-		database_repo.populate(database_engine, data_path)  # ?? Do this before mapping model to tables?
+		database_repo.populate(database_engine, data_path)  # Do this before mapping model to tables?
 	else:
 		map_model_to_tables()
-
-	# # *** DEBUGGING START ***
-	# remove("getflix/repository/getflix_database.db")
-	# print("*** DEBUGGING: 'getflix_database.db' deleted after database initialisation")
-	# # *** DEBUGGING END ***
 
 	servData = {
 		"titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
