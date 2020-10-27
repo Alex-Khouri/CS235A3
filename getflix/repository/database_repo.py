@@ -5,38 +5,6 @@ from flask import _app_ctx_stack
 from werkzeug.security import generate_password_hash
 
 
-def populate(engine, data_path):
-	conn = engine.raw_connection()
-	cursor = conn.cursor()
-	csvReader = MovieFileCSVReader(data_path)
-	csvReader.read_csv_file()
-	genres = csvReader.dataset_of_genres
-	actors = csvReader.dataset_of_actors
-	directors = csvReader.dataset_of_directors
-	movies = csvReader.dataset_of_movies
-	for genre in genres:
-		cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
-						VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
-	for actor in actors:
-		cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
-						VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
-								"{actor.colleague_codes}", "{actor.code}")""")
-	for director in directors:
-		cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)
-						VALUES ("{director.director_full_name}", "{director.movie_codes}",
-								"{director.code}")""")
-	for movie in movies:
-		movie_description = movie.description.replace("\"", "'")  # Potentially find a way to retain double-quotes?
-		cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
-						genre_codes, runtime, reviews, review_count, rating, votes, code)
-						VALUES ("{movie.title}", {movie.year}, "{movie_description}",
-								"{movie.director_code}", "{movie.actor_codes}", "{movie.genre_codes}",
-								{movie.runtime_minutes}, "{movie.reviews}", {movie.review_count},
-								"{movie.rating}", {movie.votes}, "{movie.code}")""")
-	conn.commit()
-	conn.close()
-
-
 class SessionContextManager:
 	def __init__(self, session_factory):
 		self.__session_factory = session_factory
@@ -76,10 +44,10 @@ class DatabaseRepo:
 
 	def __init__(self, session_factory):
 		self.session_manager = SessionContextManager(session_factory)
-		self.repo_movies = None
+		self.repo_genres = None
 		self.repo_actors = None
 		self.repo_directors = None
-		self.repo_genres = None
+		self.repo_movies = None
 		self.repo_users = None
 
 	@property
@@ -126,6 +94,48 @@ class DatabaseRepo:
 	def users(self, newUsers):
 		if isinstance(newUsers, list):
 			self.repo_users = newUsers
+
+	def populate(self, engine, data_path):
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+		csvReader = MovieFileCSVReader(data_path)
+		csvReader.read_csv_file()
+		self.repo_genres = csvReader.dataset_of_genres
+		self.repo_actors = csvReader.dataset_of_actors
+		self.repo_directors = csvReader.dataset_of_directors
+		self.repo_movies = csvReader.dataset_of_movies
+		for genre in self.repo_genres:
+			cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
+							VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
+		for actor in self.repo_actors:
+			cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
+							VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
+									"{actor.colleague_codes}", "{actor.code}")""")
+		for director in self.repo_directors:
+			cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)
+							VALUES ("{director.director_full_name}", "{director.movie_codes}",
+									"{director.code}")""")
+		for movie in self.repo_movies:
+			movie_description = movie.description.replace("\"", "'")  # Potentially find a way to retain double-quotes?
+			cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
+							genre_codes, runtime, reviews, review_count, rating, votes, code)
+							VALUES ("{movie.title}", {movie.year}, "{movie_description}",
+									"{movie.director_code}", "{movie.actor_codes}", "{movie.genre_codes}",
+									{movie.runtime_minutes}, "{movie.reviews}", {movie.review_count},
+									"{movie.rating}", {movie.votes}, "{movie.code}")""")
+		conn.commit()
+		conn.close()
+
+	def load(self, engine):  # *** DEV: This function should populate objects from the database
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+
+		cursor.execute("""SELECT * from genres""")  # *** DEV: Continue from here
+		self.repo_genres = cursor.fetchall()
+		print(self.repo_genres)
+
+		conn.commit()
+		conn.close()
 
 	def add_user(self, newUser):
 		if newUser not in self.repo_users and newUser.username not in [user.username for user in self.repo_users]:

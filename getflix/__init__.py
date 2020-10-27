@@ -39,9 +39,10 @@ def create_app():
 		for table in reversed(metadata.sorted_tables):
 			database_engine.execute(table.delete())
 		map_model_to_tables()
-		database_repo.populate(database_engine, data_path)  # Do this before mapping model to tables?
+		repo.populate(database_engine, data_path)  # Do this before mapping model to tables?
 	else:
 		map_model_to_tables()
+		repo.load(database_engine)  # Do this before mapping model to tables?
 
 	servData = {
 		"titleChars": ["0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
