@@ -52,12 +52,24 @@ class Movie:
 		return self.movie_director
 
 	@property
+	def director_code(self):
+		return self.movie_director_code
+
+	@property
 	def actors(self):
 		return self.movie_actors
 
 	@property
+	def actor_codes(self):
+		return self.movie_actor_codes
+
+	@property
 	def genres(self):
 		return self.movie_genres
+
+	@property
+	def genre_codes(self):
+		return self.movie_genre_codes
 
 	@property
 	def runtime_minutes(self):
@@ -69,7 +81,7 @@ class Movie:
 
 	@property
 	def review_codes(self):
-		return self.review_codes
+		return self.movie_review_codes
 
 	@property
 	def review_count(self):
@@ -86,18 +98,6 @@ class Movie:
 	@property
 	def code(self):
 		return self.movie_code
-
-	@property
-	def actor_codes(self):
-		return self.movie_actor_codes
-
-	@property
-	def genre_codes(self):
-		return self.movie_genre_codes
-
-	@property
-	def director_code(self):
-		return self.movie_director_code
 
 	@title.setter
 	def title(self, newTitle):
@@ -121,17 +121,29 @@ class Movie:
 		self.movie_director = newDirector
 		self.movie_director_code = self.movie_director.code
 
+	@director_code.setter
+	def director_code(self, new):
+		print("WARNING: director_code cannot be manually reassigned")
+
 	@actors.setter
 	def actors(self, newActors):
 		if isinstance(newActors, list):
 			self.movie_actors = newActors
 			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 
+	@actor_codes.setter
+	def actor_codes(self, new):
+		print("WARNING: actor_codes cannot be manually reassigned")
+
 	@genres.setter
 	def genres(self, newGenres):
 		if isinstance(newGenres, list):
 			self.movie_genres = newGenres
 			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
+
+	@genre_codes.setter
+	def genre_codes(self, new):
+		print("WARNING: genre_codes cannot be manually reassigned")
 
 	@runtime_minutes.setter
 	def runtime_minutes(self, newRuntime):
@@ -167,18 +179,6 @@ class Movie:
 	@code.setter
 	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
-
-	@actor_codes.setter
-	def actor_codes(self, new):
-		print("WARNING: actor_codes cannot be manually reassigned")
-
-	@genre_codes.setter
-	def genre_codes(self, new):
-		print("WARNING: genre_codes cannot be manually reassigned")
-
-	@director_code.setter
-	def director_code(self, new):
-		print("WARNING: director_code cannot be manually reassigned")
 
 	def add_actor(self, newActor):
 		if not newActor in self.movie_actors:

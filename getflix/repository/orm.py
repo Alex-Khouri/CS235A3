@@ -14,26 +14,28 @@ from getflix.domainmodel.watchlist import Watchlist
 
 metadata = MetaData()
 
-# Lists of objects are stored as CSV strings of domain model code attributes
+# Lists of objects are stored as CSV strings of domain model codes attributes (names contain 'code')
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('username', String(255), unique=True, nullable=False),
 	Column('password', String(255), nullable=False),
-	Column('watched', String(1024), nullable=False),  # CSV string of IDs
-	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
-	Column('watchlist', ForeignKey('watchlists.id')),
-	Column('timewatching', Integer, nullable=False)
+	Column('watched_codes', String(1024), nullable=False),
+	Column('review_codes', String(1024), nullable=False),
+	Column('timewatching', Integer, nullable=False),
+	Column('watchlist_code', String(255), nullable=False),
+	Column('code', String(1024), nullable=False)
 )
 reviews = Table(
 	'reviews', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
-	Column('user_id', ForeignKey('users.id')),
-	Column('movie_id', ForeignKey('movies.id')),
+	Column('user_code', String(255), nullable=False),
+	Column('movie_code', String(255), nullable=False),
 	Column('text', String(1024), nullable=False),
 	Column('rating', Integer, nullable=False),
-	Column('timestamp', DateTime, nullable=False),
-	Column('date', String(1024), nullable=False),
+	Column('timestamp', String(255), nullable=False),
+	Column('date', String(255), nullable=False),
+	Column('code', String(255), nullable=False)
 )
 movies = Table(
 	'movies', metadata,
@@ -42,12 +44,12 @@ movies = Table(
 	Column('year', Integer, nullable=False),
 	Column('description', String(1024), nullable=False),
 	Column('director_code', String(255), nullable=False),
-	Column('actor_codes', String(1024), nullable=False),  # CSV string of codes
-	Column('genre_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('actor_codes', String(1024), nullable=False),
+	Column('genre_codes', String(1024), nullable=False),
 	Column('runtime_minutes', Integer, nullable=False),
-	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
+	Column('review_codes', String(1024), nullable=False),
 	Column('review_count', Integer, nullable=False),
-	Column('rating', String(1024), nullable=False),
+	Column('rating', String(255), nullable=False),
 	Column('votes', Integer, nullable=False),
 	Column('code', String(255), nullable=False)
 )
@@ -55,28 +57,30 @@ actors = Table(
 	'actors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
-	Column('colleague_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),
+	Column('colleague_codes', String(1024), nullable=False),
 	Column('code', String(255), nullable=False)
 )
 directors = Table(
 	'directors', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),
 	Column('code', String(255), nullable=False)
 )
 genres = Table(
 	'genres', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
 	Column('name', String(255), nullable=False),
-	Column('movie_codes', String(1024), nullable=False),  # CSV string of codes
+	Column('movie_codes', String(1024), nullable=False),
 	Column('code', String(255), nullable=False)
 )
 watchlists = Table(
 	'watchlists', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),
-	Column('movies', String(1024), nullable=False)  # CSV string of IDs
+	Column('user_code', String(255), nullable=False),
+	Column('movie_codes', String(1024), nullable=False),
+	Column('code', String(255), nullable=False)
 )
 
 
@@ -84,18 +88,20 @@ def map_model_to_tables():
 	mapper(User, users, properties={
 		'user_username': users.c.username,
 		'user_password': users.c.password,
-		'user_watched': users.c.watched,
-		'user_reviews': users.c.reviews,
-		'user_watchlist': relationship(Watchlist),
-		'user_timewatching': users.c.timewatching
+		'user_watched_codes': users.c.watched_codes,
+		'user_review_codes': users.c.review_codes,
+		'user_timewatching': users.c.timewatching,
+		'user_watchlist_code': users.c.watchlist_code,
+		'user_code': users.c.code
 	})
 	mapper(Review, reviews, properties={
-		'review_user': relationship(User),
-		'review_movie': relationship(Movie),
+		'review_user_code': reviews.c.user_code,
+		'review_movie_code': reviews.c.movie_code,
 		'review_text': reviews.c.text,
 		'review_rating': reviews.c.rating,
 		'review_timestamp': reviews.c.timestamp,
-		'review_date': reviews.c.date
+		'review_date': reviews.c.date,
+		'review_code': reviews.c.code
 	})
 	mapper(Movie, movies, properties={
 		'movie_title': movies.c.title,
@@ -105,7 +111,7 @@ def map_model_to_tables():
 		'movie_actor_codes': movies.c.actor_codes,
 		'movie_genre_codes': movies.c.genre_codes,
 		'movie_runtime_minutes': movies.c.runtime_minutes,
-		'movie_reviews': movies.c.reviews,
+		'movie_review_codes': movies.c.review_codes,
 		'movie_review_count': movies.c.review_count,
 		'movie_rating': movies.c.rating,
 		'movie_votes': movies.c.votes,
@@ -128,5 +134,7 @@ def map_model_to_tables():
 		'genre_code': genres.c.code
 	})
 	mapper(Watchlist, watchlists, properties={
-		'watchlist_movie_list': watchlists.c.movies
+		'watchlist_user_code': watchlists.c.user_code,
+		'watchlist_movie_codes': watchlists.c.movie_codes,
+		'watchlist_code': watchlists.c.code
 	})

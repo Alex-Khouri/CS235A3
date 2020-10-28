@@ -116,12 +116,12 @@ class DatabaseRepo:
 							VALUES ("{director.director_full_name}", "{director.movie_codes}",
 									"{director.code}")""")
 		for movie in self.repo_movies:
-			movie_description = movie.description.replace("\"", "'")  # Potentially find a way to retain double-quotes?
+			movie_description = movie.description.replace("\"", "'")
 			cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
-							genre_codes, runtime_minutes, reviews, review_count, rating, votes, code)
+							genre_codes, runtime_minutes, review_codes, review_count, rating, votes, code)
 							VALUES ("{movie.title}", {movie.year}, "{movie_description}",
 									"{movie.director_code}", "{movie.actor_codes}", "{movie.genre_codes}",
-									{movie.runtime_minutes}, "{movie.reviews}", {movie.review_count},
+									{movie.runtime_minutes}, "{movie.review_codes}", {movie.review_count},
 									"{movie.rating}", {movie.votes}, "{movie.code}")""")
 		conn.commit()
 		conn.close()
@@ -135,12 +135,10 @@ class DatabaseRepo:
 		actors = cursor.fetchall()
 		cursor.execute("""SELECT name, movie_codes, code FROM directors""")
 		directors = cursor.fetchall()
-		cursor.execute("""SELECT title, year, description, director_code, actor_codes,
-						genre_codes, runtime_minutes, reviews, review_count, rating, votes, code
-						FROM movies""")
+		cursor.execute("""SELECT title, year, description, director_code, actor_codes, genre_codes,
+						runtime_minutes, reviews, review_count, rating, votes, code FROM movies""")
 		movies = cursor.fetchall()
 
-		# Updated ORM to match updated domain model objects099
 		# Fetch users, reviews, and watchlists and load into memory
 
 		conn.commit()
