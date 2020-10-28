@@ -10,8 +10,8 @@ class Review:
 		self.review_movie_code = self.review_movie.code if arg_movie_code is None else arg_movie_code
 		self.review_text = arg_text.strip() if isinstance(arg_text, str) else None
 		self.review_rating = arg_rating if (isinstance(arg_rating, int) and (arg_rating in range(1, 11))) else None
-		self.review_timestamp = datetime.now() if arg_timestamp is None else arg_timestamp
-		self.review_date = str(self.review_timestamp).split(' ')[0] if arg_date is None else arg_date
+		self.review_timestamp = str(datetime.now()) if arg_timestamp is None else arg_timestamp
+		self.review_date = self.review_timestamp.split(' ')[0] if arg_date is None else arg_date
 		self.review_code = str(hash(self.review_user.username + self.review_movie.title + self.review_timestamp)) if arg_code is None else arg_code
 
 	def __repr__(self):

@@ -2,12 +2,13 @@ from getflix.domainmodel.watchlist import Watchlist
 
 
 class User:
-	def __init__(self, arg_username=None, arg_password=None, arg_watched=list(), arg_reviews=list(),
-				 arg_review_codes="", arg_timewatching=0, arg_watchlist=None, arg_watchlist_code=None,
-				 arg_code=None):
+	def __init__(self, arg_username=None, arg_password=None, arg_watched=list(), arg_watched_codes="",
+				 arg_reviews=list(), arg_review_codes="", arg_timewatching=0, arg_watchlist=None,
+				 arg_watchlist_code=None, arg_code=None):
 		self.user_username = arg_username.strip().lower() if isinstance(arg_username, str) else None
 		self.user_password = arg_password if isinstance(arg_password, str) else None
 		self.user_watched = arg_watched
+		self.user_watched_codes = arg_watched_codes
 		self.user_reviews = arg_reviews
 		self.user_review_codes = arg_review_codes
 		self.user_timewatching = arg_timewatching
@@ -38,6 +39,10 @@ class User:
 	@property
 	def watched_movies(self):
 		return self.user_watched
+
+	@property
+	def watched_movie_codes(self):
+		return self.user_watched_codes
 
 	@property
 	def reviews(self):
@@ -77,6 +82,11 @@ class User:
 	def watched_movies(self, newWatched):
 		if isinstance(newWatched, list):
 			self.user_watched = newWatched
+			self.user_watched_codes = ",".join([movie.code for movie in self.user_watched])
+
+	@watched_movie_codes.setter
+	def watched_movie_codes(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 	@reviews.setter
 	def reviews(self, newReviews):
@@ -108,6 +118,7 @@ class User:
 	def watch_movie(self, movie):
 		if not movie in self.user_watched:
 			self.user_watched.append(movie)
+			self.user_watched_codes = ",".join([movie.code for movie in self.user_watched])
 		self.user_timewatching += movie.runtime_minutes
 		if movie in self.user_watchlist:
 			self.user_watchlist.remove_movie(movie)

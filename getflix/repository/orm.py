@@ -14,9 +14,7 @@ from getflix.domainmodel.watchlist import Watchlist
 
 metadata = MetaData()
 
-# Lists of objects are stored as CSV strings
-# CSV strings for Movies, Actors, Directors, and Genres contain domain model codes (names begin with 'csv')
-# CSV strings for all other objects contain Primary Key IDs from tables
+# Lists of objects are stored as CSV strings of domain model code attributes
 users = Table(
 	'users', metadata,
 	Column('id', Integer, primary_key=True, autoincrement=True),

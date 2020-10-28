@@ -22,7 +22,7 @@ def get_auth_status(responseData):
         statusEnd = statusStart
         while html[statusEnd] != "<":
             statusEnd += 1
-        status = html[statusStart:statusEnd].replace("&#39;" , "'")
+        status = html[statusStart:statusEnd].replace("&#39;", "'")
         return status
     except ValueError:
         raise ValueError("AuthStatus html tag edited without updating test file!")
@@ -35,7 +35,7 @@ def get_auth_message(responseData):
         messageEnd = messageStart
         while html[messageEnd] != "<":
             messageEnd += 1
-        message = html[messageStart:messageEnd].replace("&#39;" , "'")
+        message = html[messageStart:messageEnd].replace("&#39;", "'")
         return message
     except ValueError:
         raise ValueError("AuthMessage html tags edited without updating test file!")
@@ -48,7 +48,7 @@ def get_watchlist_size(responseData):
         sizeEnd = sizeStart
         while html[sizeEnd] != "<":
             sizeEnd += 1
-        size = html[sizeStart:sizeEnd].replace("&#39;" , "'")
+        size = html[sizeStart:sizeEnd].replace("&#39;", "'")
         return size
     except ValueError:
         raise ValueError("WatchlistSize html tag edited without updating test file!")
@@ -61,7 +61,7 @@ def get_movie_list_size(responseData):
         sizeEnd = sizeStart
         while html[sizeEnd] != "<":
             sizeEnd += 1
-        size = html[sizeStart:sizeEnd].replace("&#39;" , "'")
+        size = html[sizeStart:sizeEnd].replace("&#39;", "'")
         return size
     except ValueError:
         raise ValueError("MovieListSize html tag edited without updating test file!")

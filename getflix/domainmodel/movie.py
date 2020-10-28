@@ -14,8 +14,8 @@ class Movie:
 		self.movie_genre_codes = arg_genre_codes
 		self.movie_runtime_minutes = arg_runtime_minutes
 		self.movie_reviews = arg_reviews
-		self.movie_review_count = arg_review_count
 		self.movie_review_codes = arg_review_codes
+		self.movie_review_count = arg_review_count
 		self.movie_rating = arg_rating
 		self.movie_votes = arg_votes
 		self.movie_code = str(hash(self.movie_title + str(self.movie_year))) if arg_code is None else arg_code
@@ -68,6 +68,14 @@ class Movie:
 		return self.movie_reviews
 
 	@property
+	def review_codes(self):
+		return self.review_codes
+
+	@property
+	def review_count(self):
+		return self.movie_review_count
+
+	@property
 	def rating(self):
 		return round(self.movie_rating, 1)
 
@@ -78,14 +86,6 @@ class Movie:
 	@property
 	def code(self):
 		return self.movie_code
-
-	@property
-	def review_codes(self):
-		return self.review_codes
-
-	@property
-	def review_count(self):
-		return self.movie_review_count
 
 	@property
 	def actor_codes(self):
@@ -146,13 +146,13 @@ class Movie:
 		if isinstance(newReviews, list):
 			self.movie_reviews = newReviews
 
-	@review_count.setter
-	def review_count(self, new):
-		print("WARNING: Movie review counts cannot be manually reassigned")
-
 	@review_codes.setter
 	def review_codes(self, new):
 		print("WARNING: review_codes cannot be manually reassigned")
+
+	@review_count.setter
+	def review_count(self, new):
+		print("WARNING: Movie review counts cannot be manually reassigned")
 
 	@rating.setter
 	def rating(self, newRating):
