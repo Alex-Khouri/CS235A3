@@ -132,7 +132,7 @@ class DatabaseRepo:
 		conn.commit()
 		conn.close()
 
-	def load(self, engine):
+	def load(self, engine):  # DEPRECATED
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
 		cursor.execute("""SELECT * FROM genres""")
@@ -149,10 +149,7 @@ class DatabaseRepo:
 		reviews = cursor.fetchall()
 		cursor.execute("""SELECT * FROM watchlists""")
 		watchlists = cursor.fetchall()
-
-		# FIX MISSING MOVIE CODES FOR ACTORS (AND OTHER MISSING CODE ERRORS)
-		# COMPLETE DATABASE LOADING BELOW
-
+		# INCOMPLETE: The following code loads the database into memory objects
 		for row in genres:
 			genre = Genre()
 			self.genres.add(genre)
@@ -168,7 +165,6 @@ class DatabaseRepo:
 		for row in users:
 			user = User()
 			self.users.add(user)
-
 		conn.commit()
 		conn.close()
 
