@@ -136,7 +136,7 @@ class DatabaseRepo:
 		cursor.execute("""SELECT name, movie_codes, code FROM directors""")
 		directors = cursor.fetchall()
 		cursor.execute("""SELECT title, year, description, director_code, actor_codes, genre_codes,
-						runtime_minutes, reviews, review_count, rating, votes, code FROM movies""")
+						runtime_minutes, review_codes, review_count, rating, votes, code FROM movies""")
 		movies = cursor.fetchall()
 
 		# Fetch users, reviews, and watchlists and load into memory
