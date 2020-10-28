@@ -108,14 +108,14 @@ class DatabaseRepo:
 			cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
 							VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
 
-		empty_codes = 0
+		empty_codes = 0  # DEBUGGING
 		for actor in self.repo_actors:
-			if len(actor.movie_codes) == 0 and len(actor.movies) > 0:
-				empty_codes += 1
+			if len(actor.movie_codes) == 0 and len(actor.movies) > 0:  # DEBUGGING
+				empty_codes += 1  # DEBUGGING
 			cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
 							VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
 									"{actor.colleague_codes}", "{actor.code}")""")
-		print(f"*** ERROR: {empty_codes} actors have empty movie codes!")
+		print(f"*** ERROR: {empty_codes} actors have empty movie codes!")  # DEBUGGING
 
 		for director in self.repo_directors:
 			cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)

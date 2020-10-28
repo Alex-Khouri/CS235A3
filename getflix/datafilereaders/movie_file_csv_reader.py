@@ -70,7 +70,6 @@ class MovieFileCSVReader:
 					for i in range(len(actors)):
 						for existing_actor in self.actors:
 							if actors[i].actor_full_name == existing_actor.actor_full_name:
-								print(f"Duplicate of '{actors[i].actor_full_name}' found!")
 								actors[i] = existing_actor
 								break
 						movie.add_actor(actors[i])
