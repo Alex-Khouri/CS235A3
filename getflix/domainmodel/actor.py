@@ -37,12 +37,12 @@ class Actor:
 		return self.actor_colleagues
 
 	@property
-	def code(self):
-		return self.actor_code
-
-	@property
 	def colleague_codes(self):
 		return self.actor_colleague_codes
+
+	@property
+	def code(self):
+		return self.actor_code
 
 	@actor_full_name.setter
 	def actor_full_name(self, newName):

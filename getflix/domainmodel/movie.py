@@ -1,8 +1,8 @@
 class Movie:
 	def __init__(self, arg_title=None, arg_year=None, arg_description=None, arg_director=None,
 				 arg_director_code="", arg_actors=list(), arg_actor_codes="", arg_genres=list(),
-				 arg_genre_codes="", arg_runtime_minutes=0, arg_reviews=list(), arg_review_count=0,
-				 arg_review_codes="", arg_rating=None, arg_votes=0, arg_code=None):
+				 arg_genre_codes="", arg_runtime_minutes=0, arg_reviews=list(), arg_review_codes="",
+				 arg_review_count=0, arg_rating=None, arg_votes=0, arg_code=None):
 		self.movie_title = arg_title.strip() if isinstance(arg_title, str) and len(arg_title) > 0 else None
 		self.movie_year = arg_year if isinstance(arg_year, int) and arg_year >= 1900 else None
 		self.movie_description = arg_description

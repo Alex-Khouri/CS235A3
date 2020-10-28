@@ -44,15 +44,13 @@ class DatabaseRepo:
 
 	def __init__(self, session_factory):
 		self.session_manager = SessionContextManager(session_factory)
-		self.repo_genres = set()
 		self.repo_actors = set()
 		self.repo_directors = set()
+		self.repo_genres = set()
 		self.repo_movies = list()
+		self.repo_reviews = list()
 		self.repo_users = list()
-
-	@property
-	def movies(self):
-		return self.repo_movies
+		self.repo_watchlists = list()
 
 	@property
 	def actors(self):
@@ -67,13 +65,20 @@ class DatabaseRepo:
 		return self.repo_genres
 
 	@property
+	def movies(self):
+		return self.repo_movies
+
+	@property
+	def reviews(self):
+		return self.repo_reviews
+
+	@property
 	def users(self):
 		return self.repo_users
 
-	@movies.setter
-	def movies(self, newMovies):
-		if isinstance(newMovies, list):
-			self.repo_movies = newMovies
+	@property
+	def watchlists(self):
+		return self.repo_watchlists
 
 	@actors.setter
 	def actors(self, newActors):
@@ -90,10 +95,25 @@ class DatabaseRepo:
 		if isinstance(newGenres, set):
 			self.repo_genres = newGenres
 
+	@movies.setter
+	def movies(self, newMovies):
+		if isinstance(newMovies, list):
+			self.repo_movies = newMovies
+
+	@reviews.setter
+	def reviews(self, newReviews):
+		if isinstance(newReviews, list):
+			self.repo_reviews = newReviews
+
 	@users.setter
 	def users(self, newUsers):
 		if isinstance(newUsers, list):
 			self.repo_users = newUsers
+
+	@watchlists.setter
+	def watchlists(self, newWatchlists):
+		if isinstance(newWatchlists, list):
+			self.repo_watchlists = newWatchlists
 
 	def populate(self, engine, data_path):
 		conn = engine.raw_connection()
@@ -132,39 +152,81 @@ class DatabaseRepo:
 		conn.commit()
 		conn.close()
 
-	def load(self, engine):  # DEPRECATED
+	def load(self, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
-		cursor.execute("""SELECT * FROM genres""")
-		genres = cursor.fetchall()
 		cursor.execute("""SELECT * FROM actors""")
 		actors = cursor.fetchall()
 		cursor.execute("""SELECT * FROM directors""")
 		directors = cursor.fetchall()
+		cursor.execute("""SELECT * FROM genres""")
+		genres = cursor.fetchall()
 		cursor.execute("""SELECT * FROM movies""")
 		movies = cursor.fetchall()
-		cursor.execute("""SELECT * FROM users""")
-		users = cursor.fetchall()
 		cursor.execute("""SELECT * FROM reviews""")
 		reviews = cursor.fetchall()
+		cursor.execute("""SELECT * FROM users""")
+		users = cursor.fetchall()
 		cursor.execute("""SELECT * FROM watchlists""")
 		watchlists = cursor.fetchall()
-		# INCOMPLETE: The following code loads the database into memory objects
-		for row in genres:
-			genre = Genre()
-			self.genres.add(genre)
+
+		#  FIRST STEP: Create isolated object references
 		for row in actors:
-			actor = Actor()
-			self.actors.add(actor)
+			actor = Actor(row[1], list(), row[2], list(), row[3], row[4])
+			self.repo_actors.add(actor)
 		for row in directors:
-			director = Director()
-			self.directors.add()
+			director = Director(row[1], list(), row[2], row[3])
+			self.repo_directors.add(director)
+		for row in genres:
+			genre = Genre(row[1], list(), row[2], row[3])
+			self.repo_genres.add(genre)
 		for row in movies:
-			movie = Movie()
-			self.movies.add(movie)
+			movie = Movie(row[1], row[2], row[3], None, row[4], list(), row[5], list(), row[6], row[7],
+						  list(), row[8], row[9], row[10], row[11], row[12])
+			self.repo_movies.append(movie)
+		for row in reviews:
+			review = Review(None, row[1], None, row[2], row[3], row[4], row[5], row[6], row[7])
+			self.repo_reviews.append(review)
 		for row in users:
-			user = User()
-			self.users.add(user)
+			user = User(row[1], row[2], list(), row[3], list(), row[4], row[5], None, row[6], row[7])
+			self.repo_users.append(user)
+		for row in watchlists:
+			watchlist = Watchlist(row[1], list(), row[2], row[3])
+			self.repo_watchlists.append(watchlist)
+
+		# SECOND STEP: Populate object relationships
+		for actor in self.repo_actors:
+			for code in actor.movie_codes:
+				actor.add_movie(self.find_movie(code))
+			for code in actor.colleague_codes:
+				actor.add_actor_colleague(self.find_actor(code))
+		for director in self.repo_directors:
+			for code in director.movie_codes:
+				director.add_movie(self.find_movie(code))
+		for genre in self.repo_genres:
+			for code in genre.movie_codes:
+				genre.add_movie(self.find_movie(code))
+		for movie in self.repo_movies:
+			movie.director = self.find_director(movie.director_code)
+			for code in movie.actor_codes:
+				movie.add_actor(self.find_actor(code))
+			for code in movie.genre_codes:
+				movie.add_genre(self.find_genre(code))
+			for code in movie.review_codes:
+				movie.add_review(self.find_review(code))
+		for review in self.repo_reviews:
+			review.user = self.find_user(review.user_code)
+			review.movie = self.find_movie(review.movie_code)
+		for user in self.repo_users:
+			for code in user.watched_movie_codes:
+				user.watched_movies.append(self.find_movie(code))  # Can't use watch_movie() for this
+			for code in user.review_codes:
+				user.add_review(self.find_review(code))
+			user.watchlist = self.find_watchlist(user.watchlist_code)
+		for watchlist in self.repo_watchlists:
+			for code in watchlist.movie_codes:
+				watchlist.add_movie(self.find_movie(code))
+
 		conn.commit()
 		conn.close()
 
@@ -189,11 +251,11 @@ class DatabaseRepo:
 					return user
 		return None
 
-	def get_movie(self, movieTitle):
-		if movieTitle is None:
+	def get_movie(self, title):
+		if title is None:
 			return None
 		for movie in self.repo_movies:
-			if movie.title.strip().lower() == movieTitle.strip().lower():
+			if movie.title.strip().lower() == title.strip().lower():
 				return movie
 		return None
 
@@ -202,6 +264,49 @@ class DatabaseRepo:
 			user = self.get_user(username)
 			if user is not None:
 				return user.watchlist
+		return None
+
+	# `Find` functions retrieve objects using codes
+	def find_actor(self, code):
+		for actor in self.repo_actors:
+			if actor.code == code:
+				return actor
+		return None
+
+	def find_director(self, code):
+		for director in self.repo_directors:
+			if director.code == code:
+				return director
+		return None
+
+	def find_genre(self, code):
+		for genre in self.repo_genres:
+			if genre.code == code:
+				return genre
+		return None
+
+	def find_movie(self, code):
+		for movie in self.repo_movies:
+			if movie.code == code:
+				return movie
+		return None
+
+	def find_review(self, code):
+		for review in self.repo_reviews:
+			if review.code == code:
+				return review
+		return None
+
+	def find_user(self, code):
+		for user in self.repo_users:
+			if user.code == code:
+				return user
+		return None
+
+	def find_watchlist(self, code):
+		for watchlist in self.repo_watchlists:
+			if watchlist.code == code:
+				return watchlist
 		return None
 
 
