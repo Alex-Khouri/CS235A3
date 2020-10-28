@@ -107,10 +107,16 @@ class DatabaseRepo:
 		for genre in self.repo_genres:
 			cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
 							VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
+
+		empty_codes = 0
 		for actor in self.repo_actors:
+			if len(actor.movie_codes) == 0 and len(actor.movies) > 0:
+				empty_codes += 1
 			cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
 							VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
 									"{actor.colleague_codes}", "{actor.code}")""")
+		print(f"*** ERROR: {empty_codes} actors have empty movie codes!")
+
 		for director in self.repo_directors:
 			cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)
 							VALUES ("{director.director_full_name}", "{director.movie_codes}",
@@ -129,17 +135,39 @@ class DatabaseRepo:
 	def load(self, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
-		cursor.execute("""SELECT name, movie_codes, code FROM genres""")
+		cursor.execute("""SELECT * FROM genres""")
 		genres = cursor.fetchall()
-		cursor.execute("""SELECT name, movie_codes, colleague_codes, code FROM actors""")
+		cursor.execute("""SELECT * FROM actors""")
 		actors = cursor.fetchall()
-		cursor.execute("""SELECT name, movie_codes, code FROM directors""")
+		cursor.execute("""SELECT * FROM directors""")
 		directors = cursor.fetchall()
-		cursor.execute("""SELECT title, year, description, director_code, actor_codes, genre_codes,
-						runtime_minutes, review_codes, review_count, rating, votes, code FROM movies""")
+		cursor.execute("""SELECT * FROM movies""")
 		movies = cursor.fetchall()
+		cursor.execute("""SELECT * FROM users""")
+		users = cursor.fetchall()
+		cursor.execute("""SELECT * FROM reviews""")
+		reviews = cursor.fetchall()
+		cursor.execute("""SELECT * FROM watchlists""")
+		watchlists = cursor.fetchall()
 
-		# Fetch users, reviews, and watchlists and load into memory
+		# FIX MISSING MOVIE CODES FOR ACTORS (AND OTHER MISSING CODE ERRORS)
+		# COMPLETE DATABASE LOADING BELOW
+
+		for row in genres:
+			genre = Genre()
+			self.genres.add(genre)
+		for row in actors:
+			actor = Actor()
+			self.actors.add(actor)
+		for row in directors:
+			director = Director()
+			self.directors.add()
+		for row in movies:
+			movie = Movie()
+			self.movies.add(movie)
+		for row in users:
+			user = User()
+			self.users.add(user)
 
 		conn.commit()
 		conn.close()

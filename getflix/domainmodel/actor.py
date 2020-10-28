@@ -29,16 +29,16 @@ class Actor:
 		return self.actor_movies
 
 	@property
+	def movie_codes(self):
+		return self.actor_movie_codes
+
+	@property
 	def colleagues(self):
 		return self.actor_colleagues
 
 	@property
 	def code(self):
 		return self.actor_code
-
-	@property
-	def movie_codes(self):
-		return self.actor_movie_codes
 
 	@property
 	def colleague_codes(self):
@@ -54,14 +54,14 @@ class Actor:
 		if isinstance(newMovies, list):
 			self.actor_movies = newMovies
 
+	@movie_codes.setter
+	def movie_codes(self, new):
+		print("WARNING: movie_codes cannot be manually reassigned")
+
 	@colleagues.setter
 	def colleagues(self, newColleagues):
 		if isinstance(newColleagues, list):
 			self.actor_colleagues = newColleagues
-
-	@movie_codes.setter
-	def movie_codes(self, new):
-		print("WARNING: movie_codes cannot be manually reassigned")
 
 	@colleague_codes.setter
 	def colleague_codes(self, new):

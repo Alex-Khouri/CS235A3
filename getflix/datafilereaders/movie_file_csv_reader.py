@@ -59,23 +59,36 @@ class MovieFileCSVReader:
 					movie = Movie(row['Title'].strip(), int(row['Year'].strip()))
 					movie.description = row['Description']
 					director = Director(row['Director'].strip())
+					for existing_director in self.directors:
+						if existing_director.director_full_name == director.director_full_name:
+							director = existing_director
+							break
 					movie.director = director
 					director.add_movie(movie)
-					actors = {Actor(actor.strip()) for actor in row['Actors'].split(",")}
-					for actor in actors:
-						movie.add_actor(actor)
-						actor.add_movie(movie)
-					genres = {Genre(genre.strip()) for genre in row['Genre'].split(",")}
-					for genre in genres:
-						movie.add_genre(genre)
-						genre.add_movie(movie)
+					self.directors.add(director)
+					actors = [Actor(actor.strip()) for actor in row['Actors'].split(",")]
+					for i in range(len(actors)):
+						for existing_actor in self.actors:
+							if actors[i].actor_full_name == existing_actor.actor_full_name:
+								print(f"Duplicate of '{actors[i].actor_full_name}' found!")
+								actors[i] = existing_actor
+								break
+						movie.add_actor(actors[i])
+						actors[i].add_movie(movie)
+					self.actors.update(set(actors))
+					genres = [Genre(genre.strip()) for genre in row['Genre'].split(",")]
+					for i in range(len(genres)):
+						for existing_genre in self.genres:
+							if genres[i].name == existing_genre.name:
+								genres[i] = existing_genre
+								break
+						movie.add_genre(genres[i])
+						genres[i].add_movie(movie)
+					self.genres.update(set(genres))
 					movie.runtime_minutes = int(row['Runtime (Minutes)'])
 					movie.rating = float(row['Rating'])
 					movie.votes = int(row['Votes'])
 					self.movies.append(movie)
-					self.actors.update(set(actors))
-					self.directors.add(director)
-					self.genres.update(set(genres))
 				except Exception as err:
 					continue  # Skips movies with invalid formatting
 			csvfile.close()
