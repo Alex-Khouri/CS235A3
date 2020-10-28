@@ -1,43 +1,40 @@
-
-
 class Movie:
-	def __init__(self, movTitle, movYear):
-		self.movie_title = None
-		if isinstance(movTitle, str) and len(movTitle) > 0:
-			self.movie_title = movTitle.strip()
-		self.movie_year = None
-		if isinstance(movYear, int) and movYear >= 1900:
-			self.movie_year = movYear
-		self.movie_description = None
-		self.movie_director = None
-		self.movie_director_code = ""
-		self.movie_actors = list()
-		self.movie_actor_codes = ""
-		self.movie_genres = list()
-		self.movie_genre_codes = ""
-		self.movie_runtime_minutes = 0
-		self.movie_reviews = list()
-		self.movie_review_count = 0
-		self.movie_review_codes = ""
-		self.movie_rating = None
-		self.movie_votes = 0
-		self.movie_code = str(hash(self.movie_title + str(self.movie_year)))
-	
+	def __init__(self, arg_title=None, arg_year=None, arg_description=None, arg_director=None,
+				 arg_director_code="", arg_actors=list(), arg_actor_codes="", arg_genres=list(),
+				 arg_genre_codes="", arg_runtime_minutes=0, arg_reviews=list(), arg_review_count=0,
+				 arg_review_codes="", arg_rating=None, arg_votes=0, arg_code=None):
+		self.movie_title = arg_title.strip() if isinstance(arg_title, str) and len(arg_title) > 0 else None
+		self.movie_year = arg_year if isinstance(arg_year, int) and arg_year >= 1900 else None
+		self.movie_description = arg_description
+		self.movie_director = arg_director
+		self.movie_director_code = arg_director_code
+		self.movie_actors = arg_actors
+		self.movie_actor_codes = arg_actor_codes
+		self.movie_genres = arg_genres
+		self.movie_genre_codes = arg_genre_codes
+		self.movie_runtime_minutes = arg_runtime_minutes
+		self.movie_reviews = arg_reviews
+		self.movie_review_count = arg_review_count
+		self.movie_review_codes = arg_review_codes
+		self.movie_rating = arg_rating
+		self.movie_votes = arg_votes
+		self.movie_code = str(hash(self.movie_title + str(self.movie_year))) if arg_code is None else arg_code
+
 	def __repr__(self):
 		return f"<Movie {self.movie_title}, {self.movie_year}>"
-	
+
 	def __eq__(self, other):
 		return self.__class__ == other.__class__ and self.movie_title == other.movie_title and self.movie_year == other.movie_year
-	
+
 	def __lt__(self, other):
 		if self.movie_title == other.movie_title:
 			return self.movie_year < other.movie_year
 		else:
 			return self.movie_title < other.movie_title
-	
+
 	def __hash__(self):
 		return hash(self.movie_title + str(self.movie_year))
-		
+
 	@property
 	def title(self):
 		return self.movie_title
@@ -45,23 +42,23 @@ class Movie:
 	@property
 	def year(self):
 		return self.movie_year
-	
+
 	@property
 	def description(self):
 		return self.movie_description
-		
+
 	@property
 	def director(self):
 		return self.movie_director
-		
+
 	@property
 	def actors(self):
 		return self.movie_actors
-		
+
 	@property
 	def genres(self):
 		return self.movie_genres
-		
+
 	@property
 	def runtime_minutes(self):
 		return self.movie_runtime_minutes
@@ -118,24 +115,24 @@ class Movie:
 	def description(self, newDescrip):
 		if isinstance(newDescrip, str) and len(newDescrip) > 0:
 			self.movie_description = newDescrip.strip()
-	
+
 	@director.setter
 	def director(self, newDirector):
 		self.movie_director = newDirector
 		self.movie_director_code = self.movie_director.code
-			
+
 	@actors.setter
 	def actors(self, newActors):
 		if isinstance(newActors, list):
 			self.movie_actors = newActors
 			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
-			
+
 	@genres.setter
 	def genres(self, newGenres):
 		if isinstance(newGenres, list):
 			self.movie_genres = newGenres
 			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
-			
+
 	@runtime_minutes.setter
 	def runtime_minutes(self, newRuntime):
 		if isinstance(newRuntime, int):
@@ -190,7 +187,7 @@ class Movie:
 			return True
 		else:
 			return False
-			
+
 	def add_genre(self, newGenre):
 		if not newGenre in self.movie_genres:
 			self.movie_genres.append(newGenre)
@@ -208,8 +205,8 @@ class Movie:
 		if self.movie_rating is None:
 			self.movie_rating = newReview.rating
 		else:
-			self.movie_rating = self.movie_rating*((v-1)/v) + newReview.rating*(1/v)
-			
+			self.movie_rating = self.movie_rating * ((v - 1) / v) + newReview.rating * (1 / v)
+
 	def remove_actor(self, remActor):
 		if remActor in self.movie_actors:
 			self.movie_actors.remove(remActor)
@@ -223,7 +220,7 @@ class Movie:
 					return True
 		else:
 			return False
-			
+
 	def remove_genre(self, remGenre):
 		if remGenre in self.movie_genres:
 			self.movie_genres.remove(remGenre)
@@ -246,7 +243,7 @@ class Movie:
 			if self.movie_votes == 0:
 				self.movie_rating = None
 			else:
-				self.movie_rating = self.movie_rating*((v+1)/v) - remReview.rating*(1/v)
+				self.movie_rating = self.movie_rating * ((v + 1) / v) - remReview.rating * (1 / v)
 			return True
 		else:
 			return False

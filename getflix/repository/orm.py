@@ -46,7 +46,7 @@ movies = Table(
 	Column('director_code', String(255), nullable=False),
 	Column('actor_codes', String(1024), nullable=False),  # CSV string of codes
 	Column('genre_codes', String(1024), nullable=False),  # CSV string of codes
-	Column('runtime', Integer, nullable=False),
+	Column('runtime_minutes', Integer, nullable=False),
 	Column('reviews', String(1024), nullable=False),  # CSV string of IDs
 	Column('review_count', Integer, nullable=False),
 	Column('rating', String(1024), nullable=False),
@@ -106,7 +106,7 @@ def map_model_to_tables():
 		'movie_director_code': movies.c.director_code,
 		'movie_actor_codes': movies.c.actor_codes,
 		'movie_genre_codes': movies.c.genre_codes,
-		'movie_runtime_minutes': movies.c.runtime,
+		'movie_runtime_minutes': movies.c.runtime_minutes,
 		'movie_reviews': movies.c.reviews,
 		'movie_review_count': movies.c.review_count,
 		'movie_rating': movies.c.rating,

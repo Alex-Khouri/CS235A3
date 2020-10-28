@@ -2,14 +2,18 @@ from getflix.domainmodel.watchlist import Watchlist
 
 
 class User:
-	def __init__(self, userName, userPassword):
-		self.user_username = userName.strip().lower() if isinstance(userName, str) else None
-		self.user_password = userPassword if isinstance(userPassword, str) else None
-		self.user_watched = list()
-		self.user_reviews = list()
-		self.user_timewatching = 0
-		self.user_code = str(hash(self.user_username))
-		self.user_watchlist = Watchlist(self.user_code)
+	def __init__(self, arg_username=None, arg_password=None, arg_watched=list(), arg_reviews=list(),
+				 arg_review_codes="", arg_timewatching=0, arg_watchlist=None, arg_watchlist_code=None,
+				 arg_code=None):
+		self.user_username = arg_username.strip().lower() if isinstance(arg_username, str) else None
+		self.user_password = arg_password if isinstance(arg_password, str) else None
+		self.user_watched = arg_watched
+		self.user_reviews = arg_reviews
+		self.user_review_codes = arg_review_codes
+		self.user_timewatching = arg_timewatching
+		self.user_watchlist = Watchlist(self.user_code) if arg_watchlist is None else arg_watchlist
+		self.user_watchlist_code = self.user_watchlist.code if arg_watchlist_code is None else arg_watchlist_code
+		self.user_code = str(hash(self.user_username)) if arg_code is None else arg_code
 
 	def __repr__(self):
 		return f"<User {self.user_username}>"
@@ -40,12 +44,20 @@ class User:
 		return self.user_reviews
 
 	@property
-	def watchlist(self):
-		return self.user_watchlist
+	def review_codes(self):
+		return self.user_review_codes
 
 	@property
 	def time_spent_watching_movies_minutes(self):
 		return self.user_timewatching
+
+	@property
+	def watchlist(self):
+		return self.user_watchlist
+
+	@property
+	def watchlist_code(self):
+		return self.user_watchlist_code
 
 	@property
 	def code(self):
@@ -71,14 +83,23 @@ class User:
 		if isinstance(newReviews, list):
 			self.user_reviews = newReviews
 
-	@watchlist.setter
-	def watchlist(self, newWatchlist):
-		self.user_watchlist = newWatchlist
+	@review_codes.setter
+	def review_codes(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 	@time_spent_watching_movies_minutes.setter
 	def time_spent_watching_movies_minutes(self, newTimeWatching):
 		if isinstance(newTimeWatching, int):
 			self.user_timewatching = newTimeWatching
+
+	@watchlist.setter
+	def watchlist(self, newWatchlist):
+		self.user_watchlist = newWatchlist
+		self.user_watchlist_code = self.user_watchlist.code
+
+	@watchlist_code.setter
+	def watchlist_code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 
 	@code.setter
 	def code(self, new):
@@ -93,9 +114,11 @@ class User:
 
 	def add_review(self, review):
 		self.user_reviews.append(review)
+		self.user_review_codes = ",".join([review.code for review in self.user_reviews])
 
 	def remove_review(self, review):
 		self.user_reviews.remove(review)
+		self.user_review_codes = ",".join([review.code for review in self.user_reviews])
 
 
 if __name__ == "__main__":

@@ -1,13 +1,10 @@
 
 class Director:
-	def __init__(self, name):
-		if (isinstance(name, str) and len(name) > 0):
-			self.director_name = name
-		else:
-			self.director_name = None
-		self.director_movies = list()
-		self.director_movie_codes = ""
-		self.director_code = str(hash(self.director_name))
+	def __init__(self, arg_name=None, arg_movies=list(), arg_movie_codes="", arg_code=None):
+		self.director_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None
+		self.director_movies = arg_movies
+		self.director_movie_codes = arg_movie_codes
+		self.director_code = str(hash(self.director_name)) if arg_code is None else arg_code
 	
 	def __repr__(self):
 		return f"<Director {self.director_name}>"

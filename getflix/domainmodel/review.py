@@ -2,24 +2,39 @@ from datetime import datetime
 
 
 class Review:
-	def __init__(self, revUser, revMovie, revText, revRating):
-		self.review_user = revUser
-		self.review_movie = revMovie
-		self.review_text = revText.strip() if isinstance(revText, str) else None
-		self.review_rating = revRating if (isinstance(revRating, int) and (revRating in range(1, 11))) else None
-		self.review_timestamp = datetime.now()
-		self.review_date = str(self.review_timestamp).split(' ')[0]
-		self.review_code = str(hash(self.review_user.username + self.review_movie.title + self.review_timestamp))
+	def __init__(self, arg_user=None, arg_user_code=None, arg_movie=None, arg_movie_code=None,
+				 arg_text=None, arg_rating=None, arg_timestamp=None, arg_date=None, arg_code=None):
+		self.review_user = arg_user
+		self.review_user_code = self.review_user.code if arg_user_code is None else arg_user_code
+		self.review_movie = arg_movie
+		self.review_movie_code = self.review_movie.code if arg_movie_code is None else arg_movie_code
+		self.review_text = arg_text.strip() if isinstance(arg_text, str) else None
+		self.review_rating = arg_rating if (isinstance(arg_rating, int) and (arg_rating in range(1, 11))) else None
+		self.review_timestamp = datetime.now() if arg_timestamp is None else arg_timestamp
+		self.review_date = str(self.review_timestamp).split(' ')[0] if arg_date is None else arg_date
+		self.review_code = str(hash(self.review_user.username + self.review_movie.title + self.review_timestamp)) if arg_code is None else arg_code
 
 	def __repr__(self):
 		return f"<Review {self.review_movie}, {self.review_rating}, {self.review_timestamp}, '{self.review_text}'>"
 
 	def __eq__(self, other):
-		return self.review_movie == other.revMovie and self.review_text == other.revText and self.review_rating == other.revRating and self.review_timestamp == other.revTimestamp
+		return self.review_movie == other.arg_movie and self.review_text == other.arg_text and self.review_rating == other.arg_rating and self.review_timestamp == other.revTimestamp
+
+	@property
+	def user(self):
+		return self.review_user
+
+	@property
+	def user_code(self):
+		return self.review_user_code
 
 	@property
 	def movie(self):
 		return self.review_movie
+
+	@property
+	def movie_code(self):
+		return self.review_movie_code
 
 	@property
 	def text(self):
@@ -34,10 +49,6 @@ class Review:
 		return self.review_timestamp
 
 	@property
-	def user(self):
-		return self.review_user
-
-	@property
 	def date(self):
 		return self.review_date
 
@@ -45,9 +56,21 @@ class Review:
 	def code(self):
 		return self.review_code
 
+	@user.setter
+	def user(self, newUser):
+		self.review_user = newUser
+
+	@user_code.setter
+	def user_code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
+
 	@movie.setter
 	def movie(self, newMovie):
 		self.review_movie = newMovie
+
+	@movie_code.setter
+	def movie_code(self, new):
+		print("WARNING: Codes cannot be manually reassigned")
 	
 	@text.setter
 	def text(self, newText):
@@ -63,10 +86,6 @@ class Review:
 	def timestamp(self, newTimestamp):
 		if isinstance(newTimestamp, datetime.datetime):
 			self.review_timestamp = newTimestamp
-
-	@user.setter
-	def user(self, newUser):
-		self.review_user = newUser
 
 	@date.setter
 	def date(self, new):

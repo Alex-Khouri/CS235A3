@@ -44,11 +44,11 @@ class DatabaseRepo:
 
 	def __init__(self, session_factory):
 		self.session_manager = SessionContextManager(session_factory)
-		self.repo_genres = None
-		self.repo_actors = None
-		self.repo_directors = None
-		self.repo_movies = None
-		self.repo_users = None
+		self.repo_genres = set()
+		self.repo_actors = set()
+		self.repo_directors = set()
+		self.repo_movies = list()
+		self.repo_users = list()
 
 	@property
 	def movies(self):
@@ -118,7 +118,7 @@ class DatabaseRepo:
 		for movie in self.repo_movies:
 			movie_description = movie.description.replace("\"", "'")  # Potentially find a way to retain double-quotes?
 			cursor.execute(f"""INSERT INTO movies (title, year, description, director_code, actor_codes,
-							genre_codes, runtime, reviews, review_count, rating, votes, code)
+							genre_codes, runtime_minutes, reviews, review_count, rating, votes, code)
 							VALUES ("{movie.title}", {movie.year}, "{movie_description}",
 									"{movie.director_code}", "{movie.actor_codes}", "{movie.genre_codes}",
 									{movie.runtime_minutes}, "{movie.reviews}", {movie.review_count},
@@ -126,13 +126,22 @@ class DatabaseRepo:
 		conn.commit()
 		conn.close()
 
-	def load(self, engine):  # *** DEV: This function should populate objects from the database
+	def load(self, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
+		cursor.execute("""SELECT name, movie_codes, code FROM genres""")
+		genres = cursor.fetchall()
+		cursor.execute("""SELECT name, movie_codes, colleague_codes, code FROM actors""")
+		actors = cursor.fetchall()
+		cursor.execute("""SELECT name, movie_codes, code FROM directors""")
+		directors = cursor.fetchall()
+		cursor.execute("""SELECT title, year, description, director_code, actor_codes,
+						genre_codes, runtime_minutes, reviews, review_count, rating, votes, code
+						FROM movies""")
+		movies = cursor.fetchall()
 
-		cursor.execute("""SELECT * from genres""")  # *** DEV: Continue from here
-		self.repo_genres = cursor.fetchall()
-		print(self.repo_genres)
+		# Updated ORM to match updated domain model objects
+		# Fetch users, reviews, and watchlists and load into memory
 
 		conn.commit()
 		conn.close()

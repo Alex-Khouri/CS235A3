@@ -1,28 +1,25 @@
-
 class Actor:
-	def __init__(self, name=None):
-		if isinstance(name, str) and len(name) > 0:
-			self.actor_name = name
-		else:
-			self.actor_name = None
-		self.actor_movies = list()
-		self.actor_movie_codes = ""
-		self.actor_colleagues = list()
-		self.actor_colleague_codes = ""
-		self.actor_code = str(hash(self.actor_name))
-	
+	def __init__(self, arg_name=None, arg_movies=list(), arg_movie_codes="", arg_colleagues=list(),
+				 arg_colleague_codes="", arg_code=None):
+		self.actor_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None
+		self.actor_movies = arg_movies
+		self.actor_movie_codes = arg_movie_codes
+		self.actor_colleagues = arg_colleagues
+		self.actor_colleague_codes = arg_colleague_codes
+		self.actor_code = str(hash(self.actor_name)) if arg_code is None else arg_code
+
 	def __repr__(self):
 		return f"<Actor {self.actor_name}>"
-	
+
 	def __eq__(self, other):
 		return self.__class__ == other.__class__ and self.actor_name == other.actor_full_name
-	
+
 	def __lt__(self, other):
 		return self.actor_name < other.actor_full_name
-	
+
 	def __hash__(self):
 		return hash(self.actor_name)
-	
+
 	@property
 	def actor_full_name(self):
 		return self.actor_name
@@ -46,7 +43,7 @@ class Actor:
 	@property
 	def colleague_codes(self):
 		return self.actor_colleague_codes
-	
+
 	@actor_full_name.setter
 	def actor_full_name(self, newName):
 		self.actor_name = newName
@@ -73,7 +70,7 @@ class Actor:
 	@code.setter
 	def code(self, new):
 		print("WARNING: Codes cannot be manually reassigned")
-		
+
 	def add_actor_colleague(self, colleague):
 		self.actor_colleagues.append(colleague)
 		self.actor_colleague_codes = ",".join([actor.code for actor in self.actor_colleagues])
@@ -86,7 +83,7 @@ class Actor:
 			return True
 		else:
 			return False
-		
+
 	def check_if_this_actor_worked_with(self, colleague):
 		return colleague in self.actor_colleagues
 
