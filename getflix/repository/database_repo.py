@@ -155,6 +155,7 @@ class DatabaseRepo:
 	def load(self, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
+		# STEP ONE: Retrieve entries from database
 		cursor.execute("""SELECT * FROM actors""")
 		actors = cursor.fetchall()
 		cursor.execute("""SELECT * FROM directors""")
@@ -170,7 +171,7 @@ class DatabaseRepo:
 		cursor.execute("""SELECT * FROM watchlists""")
 		watchlists = cursor.fetchall()
 
-		#  FIRST STEP: Create isolated object references
+		#  STEP TWO: Convert entries into isolated object references
 		for row in actors:
 			actor = Actor(row[1], list(), row[2], list(), row[3], row[4])
 			self.repo_actors.add(actor)
@@ -194,7 +195,7 @@ class DatabaseRepo:
 			watchlist = Watchlist(row[1], list(), row[2], row[3])
 			self.repo_watchlists.append(watchlist)
 
-		# SECOND STEP: Populate object relationships
+		# STEP THREE: Populate object relationships
 		for actor in self.repo_actors:
 			for code in actor.movie_codes:
 				actor.add_movie(self.find_movie(code))
@@ -226,23 +227,54 @@ class DatabaseRepo:
 		for watchlist in self.repo_watchlists:
 			for code in watchlist.movie_codes:
 				watchlist.add_movie(self.find_movie(code))
-
 		conn.commit()
 		conn.close()
 
-	def add_user(self, newUser):
+	def add_user(self, newUser, engine):
 		if newUser not in self.repo_users and newUser.username not in [user.username for user in self.repo_users]:
 			self.repo_users.append(newUser)
+			conn = engine.raw_connection()
+			cursor = conn.cursor()
+			cursor.execute(f"""INSERT INTO users (username, password, watched_codes, review_codes,
+							timewatching, watchlist_code, code) VALUES ("{newUser.username}",
+							"{newUser.password}", "", "", 0, "{newUser.watchlist.code}", "{newUser.code}")""")
+			cursor.commit()
+			conn.close()
 			return True
 		else:
 			return False
 
-	def remove_user(self, remUser):
+	def remove_user(self, remUser, engine):
 		if remUser in self.repo_users:
 			self.repo_users.remove(remUser)
+			conn = engine.raw_connection()
+			cursor = conn.cursor()
+			cursor.execute(f"""DELETE FROM users WHERE username == "{remUser.username}" """)
+			cursor.commit()
+			conn.close()
 			return True
 		else:
 			return False
+
+	def add_movie(self, user, newMovie, engine):
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+		cursor.execute(f"""INSERT INTO watchlists (user_code, movie_codes, code)
+						VALUES ("{user.code}", "{user.watchlist.movie_codes + ',' + newMovie.code}",
+						"{user.watchlist.code}")""")
+		# INSERT ALL THE OTHER STUFF
+		cursor.commit()
+		conn.close()
+
+	def remove_movie(self, user, remMovie, engine):
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+
+	def add_review(self, review, engine):
+		conn = engine.raw_connection()
+		cursor = conn.cursor()
+		# Use something like this: text.replace("\"", "'")
+
 
 	def get_user(self, username):
 		if username is not None:
@@ -252,11 +284,10 @@ class DatabaseRepo:
 		return None
 
 	def get_movie(self, title):
-		if title is None:
-			return None
-		for movie in self.repo_movies:
-			if movie.title.strip().lower() == title.strip().lower():
-				return movie
+		if title is not None:
+			for movie in self.repo_movies:
+				if movie.title.strip().lower() == title.strip().lower():
+					return movie
 		return None
 
 	def get_watchlist(self, username):
