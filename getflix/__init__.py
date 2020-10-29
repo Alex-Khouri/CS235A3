@@ -170,7 +170,7 @@ def create_app():
 		session["authMessage"] = ""
 		movie = repo.get_movie(request.args.get("MovieTitle"))
 		user.watchlist.add_movie(movie)
-		repo.add_movie(user, movie, database_engine)
+		repo.add_to_watchlist(user, movie, database_engine)
 		clientData["watchlistSize"] = watchlist_size(user.watchlist)
 		return render_template('index.html', **servData, **clientData)
 
@@ -191,7 +191,7 @@ def create_app():
 		user = repo.get_user(session["currUsername"])
 		movie = repo.get_movie(request.args.get("MovieTitle"))
 		user.watchlist.remove_movie(movie)
-		repo.remove_movie(user, movie, database_engine)
+		repo.remove_from_watchlist(user, movie, database_engine)
 		clientData["watchlistSize"] = watchlist_size(user.watchlist)
 		return render_template('index.html', **servData, **clientData)
 
@@ -214,10 +214,12 @@ def create_app():
 		try:
 			rating = round(float(request.args.get("ReviewRating")))
 			if rating in range(1, 11):
-				review = Review(arg_user=user, arg_movie=movie, arg_text=request.args.get("ReviewComments"), arg_rating=rating)
+				review = Review(arg_user=user, arg_movie=movie,
+								arg_text=request.args.get("ReviewComments").replace("\"", "'"),
+								arg_rating=rating)
 				movie.add_review(review)
 				user.add_review(review)
-				repo.add_review(review, database_engine)
+				repo.add_review(review, user, movie, database_engine)
 			else:
 				raise ValueError
 		except ValueError:

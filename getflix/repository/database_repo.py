@@ -238,6 +238,8 @@ class DatabaseRepo:
 			cursor.execute(f"""INSERT INTO users (username, password, watched_codes, review_codes,
 							timewatching, watchlist_code, code) VALUES ("{newUser.username}",
 							"{newUser.password}", "", "", 0, "{newUser.watchlist.code}", "{newUser.code}")""")
+			cursor.execute(f"""INSERT INTO watchlists (user_code, movie_codes, code)
+							VALUES ("{newUser.code}", "", "{newUser.watchlist.code}")""")
 			cursor.commit()
 			conn.close()
 			return True
@@ -250,30 +252,48 @@ class DatabaseRepo:
 			conn = engine.raw_connection()
 			cursor = conn.cursor()
 			cursor.execute(f"""DELETE FROM users WHERE username == "{remUser.username}" """)
+			cursor.execute(f"""DELETE FROM watchlists WHERE user_code = "{remUser.code}" """)
 			cursor.commit()
 			conn.close()
 			return True
 		else:
 			return False
 
-	def add_movie(self, user, newMovie, engine):
+	def add_to_watchlist(self, user, newMovie, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
-		cursor.execute(f"""INSERT INTO watchlists (user_code, movie_codes, code)
-						VALUES ("{user.code}", "{user.watchlist.movie_codes + ',' + newMovie.code}",
-						"{user.watchlist.code}")""")
-		# INSERT ALL THE OTHER STUFF
+		cursor.execute(f"""UPDATE watchlists
+						SET movie_codes = "{user.watchlist.movie_codes + ',' + newMovie.code}"
+						WHERE code = "{user.watchlist.code}" """)
 		cursor.commit()
 		conn.close()
 
-	def remove_movie(self, user, remMovie, engine):
+	def remove_from_watchlist(self, user, remMovie, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
+		new_movie_codes = user.watchlist.movie_codes.split(",")
+		new_movie_codes.remove(remMovie.code)
+		cursor.execute(f"""UPDATE watchlists
+						SET movie_codes = "{",".join(new_movie_codes)}"
+						WHERE code = "{user.watchlist.code}" """)
+		cursor.commit()
+		conn.close()
 
-	def add_review(self, review, engine):
+	def add_review(self, review, user, movie, engine):
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
-		# Use something like this: text.replace("\"", "'")
+		cursor.execute(f"""INSERT INTO reviews (user_code, movie_code, text, rating, timestamp, date, code)
+						VALUES ("{review.user_code}", "{review.movie_code}", "{review.text}",
+						"{review.rating}", "{review.timestamp}", "{review.date}", "{review.code}")""")
+		cursor.execute(f"""UPDATE movies SET review_codes = "{movie.review_codes}",
+										SET review_count = "{movie.review_count}",
+										SET rating = "{movie.rating}",
+										SET votes = "{movie.votes}"
+						WHERE code = "{movie.code}" """)
+		cursor.execute(f"""UPDATE users SET review_codes = "{user.review_codes + "," + review.code}" 
+						WHERE code = "{user.code}" """)
+		cursor.commit()
+		conn.close()
 
 
 	def get_user(self, username):
