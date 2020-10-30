@@ -10,7 +10,6 @@ from getflix.domainmodel.watchlist import Watchlist
 
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
-from werkzeug.security import generate_password_hash
 
 
 class SessionContextManager:

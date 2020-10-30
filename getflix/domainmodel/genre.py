@@ -56,18 +56,12 @@ class Genre:
 			self.genre_movies.append(newMovie)
 			self.genre_movie_codes = ",".join([movie.code for movie in self.genre_movies])
 			newMovie.add_genre(self)
-			return True
-		else:
-			return False
 
 	def remove_movie(self, remMovie):
 		if remMovie in self.genre_movies:
 			self.genre_movies.remove(remMovie)
 			self.genre_movie_codes = ",".join([movie.code for movie in self.genre_movies])
 			remMovie.remove_genre(self)
-			return True
-		else:
-			return False
 
 
 if __name__ == "__main__":

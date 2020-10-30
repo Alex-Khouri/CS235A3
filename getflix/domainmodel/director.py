@@ -55,17 +55,11 @@ class Director:
 		if not newMovie in self.director_movies:
 			self.director_movies.append(newMovie)
 			self.director_movie_codes = ",".join([movie.code for movie in self.director_movies])
-			return True
-		else:
-			return False
 
 	def remove_movie(self, remMovie):
 		if remMovie in self.director_movies:
 			self.director_movies.remove(remMovie)
 			self.director_movie_codes = ",".join([movie.code for movie in self.director_movies])
-			return True
-		else:
-			return False
 
 
 if __name__ == "__main__":

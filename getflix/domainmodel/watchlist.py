@@ -57,17 +57,11 @@ class Watchlist:
 		if movie not in self.watchlist_movies:
 			self.watchlist_movies.append(movie)
 			self.watchlist_movie_codes = ",".join([movie.code for movie in self.watchlist_movies])
-			return True
-		else:
-			return False
 
 	def remove_movie(self, movie):
 		if movie in self.watchlist_movies:
 			self.watchlist_movies.remove(movie)
 			self.watchlist_movie_codes = ",".join([movie.code for movie in self.watchlist_movies])
-			return True
-		else:
-			return False
 
 	def select_movie_to_watch(self, index):
 		if index in range(len(self.watchlist_movies)):

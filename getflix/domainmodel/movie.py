@@ -119,7 +119,7 @@ class Movie:
 	@director.setter
 	def director(self, newDirector):
 		self.movie_director = newDirector
-		self.movie_director_code = self.movie_director.code
+		self.movie_director_code = newDirector.code
 
 	@director_code.setter
 	def director_code(self, new):
@@ -184,17 +184,16 @@ class Movie:
 		if not newActor in self.movie_actors:
 			self.movie_actors.append(newActor)
 			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
-			return True
-		else:
-			return False
+
+	def add_director(self, newDirector):
+		if self.movie_director is not newDirector:
+			self.movie_director = newDirector
+			self.movie_director_code = newDirector.code
 
 	def add_genre(self, newGenre):
 		if not newGenre in self.movie_genres:
 			self.movie_genres.append(newGenre)
 			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
-			return True
-		else:
-			return False
 
 	def add_review(self, newReview):
 		self.movie_reviews.append(newReview)
@@ -211,29 +210,21 @@ class Movie:
 		if remActor in self.movie_actors:
 			self.movie_actors.remove(remActor)
 			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
-			return True
 		elif isinstance(remActor, str):
 			for actor in self.movie_actors:
 				if actor.actor_full_name == remActor:
 					self.movie_actors.remove(actor)
 					self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
-					return True
-		else:
-			return False
 
 	def remove_genre(self, remGenre):
 		if remGenre in self.movie_genres:
 			self.movie_genres.remove(remGenre)
 			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
-			return True
 		elif isinstance(remGenre, str):
 			for genre in self.movie_genres:
 				if genre.name == remGenre:
 					self.movie_genres.remove(genre)
 					self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
-					return True
-		else:
-			return False
 
 	def remove_review(self, remReview):
 		if remReview in self.movie_reviews:
@@ -244,9 +235,6 @@ class Movie:
 				self.movie_rating = None
 			else:
 				self.movie_rating = self.movie_rating * ((v + 1) / v) - remReview.rating * (1 / v)
-			return True
-		else:
-			return False
 
 	def get_actors_string(self):
 		return ", ".join([actor.actor_full_name for actor in self.movie_actors])

@@ -9,61 +9,61 @@ from getflix.domainmodel.movie import Movie
 class MovieFileCSVReader:
 	def __init__(self, file_name):
 		self.file_name = file_name if isinstance(file_name, str) else None
-		self.movies = list()
-		self.actors = set()
-		self.directors = set()
-		self.genres = set()
+		self.reader_movies = list()
+		self.reader_actors = set()
+		self.reader_directors = set()
+		self.reader_genres = set()
 
 	@property
 	def dataset_of_movies(self):
-		return self.movies
+		return self.reader_movies
 
 	@property
 	def dataset_of_actors(self):
-		return self.actors
+		return self.reader_actors
 
 	@property
 	def dataset_of_directors(self):
-		return self.directors
+		return self.reader_directors
 
 	@property
 	def dataset_of_genres(self):
-		return self.genres
+		return self.reader_genres
 
 	@dataset_of_movies.setter
 	def dataset_of_movies(self, newMovies):
 		if isinstance(newMovies, list):
-			self.movies = newMovies
+			self.reader_movies = newMovies
 
 	@dataset_of_actors.setter
 	def dataset_of_actors(self, newActors):
 		if isinstance(newActors, set):
-			self.actors = newActors
+			self.reader_actors = newActors
 
 	@dataset_of_directors.setter
 	def dataset_of_directors(self, newDirectors):
 		if isinstance(newDirectors, set):
-			self.directors = newDirectors
+			self.reader_directors = newDirectors
 
 	@dataset_of_genres.setter
 	def dataset_of_genres(self, newGenres):
 		if isinstance(newGenres, set):
-			self.genres = newGenres
+			self.reader_genres = newGenres
 
 	def get_actor(self, name):
-		for actor in self.actors:
+		for actor in self.reader_actors:
 			if actor.actor_full_name == name:
 				return actor
 		return Actor(arg_name=name)
 
 	def get_director(self, name):
-		for director in self.directors:
+		for director in self.reader_directors:
 			if director.director_full_name == name:
 				return director
 		return Director(arg_name=name)
 
 	def get_genre(self, name):
-		for genre in self.genres:
+		for genre in self.reader_genres:
 			if genre.name == name:
 				return genre
 		return Genre(arg_name=name)
@@ -74,35 +74,41 @@ class MovieFileCSVReader:
 			csvfile = open(self.file_name, encoding='utf-8-sig', newline='')
 			reader = csv.DictReader(csvfile)
 			for row in reader:
-				try:
-					# STEP ONE: Create and store isolated object references
-					movie = Movie(arg_title=row['Title'].strip(), arg_year=int(row['Year'].strip()),
-								  arg_description=row['Description'].replace("\"", "'"),
-								  arg_runtime_minutes=int(row['Runtime (Minutes)']),
-								  arg_rating=float(row['Rating']), arg_votes=int(row['Votes']))
-					self.movies.append(movie)
-					director = self.get_director(row['Director'].strip())
-					self.directors.add(director)
-					actors = [self.get_actor(actor.strip()) for actor in row['Actors'].split(",")]
-					self.actors.update(set(actors))
-					genres = [self.get_genre(genre.strip()) for genre in row['Genre'].split(",")]
-					self.genres.update(set(genres))
+				# STEP ONE: Create and store isolated object references
+				movie = Movie(arg_title=row['Title'].strip(), arg_year=int(row['Year'].strip()),
+							  arg_description=row['Description'].replace("\"", "'"),
+							  arg_runtime_minutes=int(row['Runtime (Minutes)']),
+							  arg_rating=float(row['Rating']), arg_votes=int(row['Votes']))
+				director = self.get_director(row['Director'].strip())
+				actors = [self.get_actor(actor.strip()) for actor in row['Actors'].split(",")]
+				genres = [self.get_genre(genre.strip()) for genre in row['Genre'].split(",")]
 
-					# STEP TWO: Populate object relationships
-					director.add_movie(movie)
-					movie.director = director
-					for actor in actors:
-						actor.add_movie(movie)
-						movie.add_actor(actor)
-						for other_actor in actors:
-							if other_actor is not actor:
-								actor.add_actor_colleague(other_actor)
-								other_actor.add_actor_colleague(actor)
-					for genre in genres:
-						genre.add_movie(movie)
-						movie.add_genre(genre)
-				except Exception:
-					continue  # Skips movies with invalid formatting
+				# STEP TWO: Populate object relationships
+				director.add_movie(movie)
+				movie.add_director(director)
+				for actor in actors:
+					actor.add_movie(movie)
+					movie.add_actor(actor)
+					for other_actor in actors:
+						if other_actor is not actor:
+							actor.add_actor_colleague(other_actor)
+				for genre in genres:
+					genre.add_movie(movie)
+					movie.add_genre(genre)
+
+				self.reader_movies.append(movie)
+				self.reader_directors.add(director)
+				self.reader_actors.update(set(actors))
+				self.reader_genres.update(set(genres))
+
+				if int(row['Rank']) < 5:  # DEBUGGING
+					print(f"\nLine: {row['Rank']}\nDirector: {director.director_full_name}\n"
+						  f"Movies: {director.movies}")
+					for mov in self.reader_movies:
+						print(f"Movie: {mov.title}\nDirector: {mov.director.director_full_name}\nActors: {mov.actors}\nGenres: {mov.genres}")
+						print("---")
+					print("----------")
+
 			csvfile.close()
 			print("CSV FILE PROCESSED")
 		except Exception as err:

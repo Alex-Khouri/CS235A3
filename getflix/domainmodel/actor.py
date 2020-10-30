@@ -75,15 +75,13 @@ class Actor:
 		if colleague not in self.actor_colleagues:
 			self.actor_colleagues.append(colleague)
 			self.actor_colleague_codes = ",".join([actor.code for actor in self.actor_colleagues])
-			colleague.add_actor_colleague(self)
+			colleague.actor_colleagues.append(self)
+			colleague.actor_colleague_codes = ",".join([actor.code for actor in colleague.actor_colleagues])
 
 	def add_movie(self, newMovie):
 		if newMovie not in self.actor_movies:
 			self.actor_movies.append(newMovie)
 			self.actor_movie_codes = ",".join([movie.code for movie in self.actor_movies])
-			return True
-		else:
-			return False
 
 	def check_if_this_actor_worked_with(self, colleague):
 		return colleague in self.actor_colleagues
@@ -92,9 +90,6 @@ class Actor:
 		if remMovie in self.actor_movies:
 			self.actor_movies.remove(remMovie)
 			self.actor_movie_codes = ",".join([movie.code for movie in self.actor_movies])
-			return True
-		else:
-			return False
 
 
 if __name__ == "__main__":
