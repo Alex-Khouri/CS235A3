@@ -187,7 +187,7 @@ class DatabaseRepo:
 			self.repo_genres.add(genre)
 		for row in movies:
 			movie = Movie(row[1], row[2], row[3], None, row[4], list(), row[5], list(), row[6], row[7],
-						  list(), row[8], row[9], row[10], row[11], row[12])
+						  list(), row[8], row[9], float(row[10]), row[11], row[12])
 			self.repo_movies.append(movie)
 		for row in reviews:
 			review = Review(None, row[1], None, row[2], row[3], row[4], row[5], row[6], row[7])
@@ -302,10 +302,13 @@ class DatabaseRepo:
 		cursor.execute(f"""INSERT INTO reviews (user_code, movie_code, text, rating, timestamp, date, code)
 						VALUES ("{review.user_code}", "{review.movie_code}", "{review.text}",
 						"{review.rating}", "{review.timestamp}", "{review.date}", "{review.code}")""")
-		cursor.execute(f"""UPDATE movies SET review_codes = "{movie.review_codes}",
-										SET review_count = "{movie.review_count}",
-										SET rating = "{movie.rating}",
-										SET votes = "{movie.votes}"
+		cursor.execute(f"""UPDATE movies SET review_codes = "{movie.review_codes}"
+						WHERE code = "{movie.code}" """)
+		cursor.execute(f"""UPDATE movies SET review_count = "{movie.review_count}"
+						WHERE code = "{movie.code}" """)
+		cursor.execute(f"""UPDATE movies SET rating = "{movie.rating}"
+						WHERE code = "{movie.code}" """)
+		cursor.execute(f"""UPDATE movies SET votes = "{movie.votes}"
 						WHERE code = "{movie.code}" """)
 		cursor.execute(f"""UPDATE users SET review_codes = "{user.review_codes + "," + review.code}" 
 						WHERE code = "{user.code}" """)

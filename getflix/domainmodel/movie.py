@@ -17,7 +17,7 @@ class Movie:
 		self.movie_reviews = list() if arg_reviews is None else arg_reviews
 		self.movie_review_codes = arg_review_codes
 		self.movie_review_count = arg_review_count
-		self.movie_rating = arg_rating
+		self.movie_rating = float(arg_rating)
 		self.movie_votes = arg_votes
 
 	def __repr__(self):
@@ -200,11 +200,11 @@ class Movie:
 			self.movie_review_codes = ",".join([review.code for review in self.movie_reviews])
 			self.movie_review_count += 1
 			self.movie_votes += 1
-			v = self.movie_votes
+			v = float(self.movie_votes)
 			if self.movie_rating is None:
 				self.movie_rating = newReview.rating
 			else:
-				self.movie_rating = self.movie_rating * ((v - 1) / v) + newReview.rating * (1 / v)
+				self.movie_rating = self.movie_rating * ((v - 1.0) / v) + newReview.rating * (1.0 / v)
 
 	def remove_actor(self, remActor):
 		if remActor in self.movie_actors:
