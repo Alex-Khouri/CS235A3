@@ -1,4 +1,3 @@
-
 class Director:
 	def __init__(self, arg_name=None, arg_movies=list(), arg_movie_codes="", arg_code=None):
 		self.director_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None

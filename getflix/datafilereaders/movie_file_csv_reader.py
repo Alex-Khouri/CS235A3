@@ -50,49 +50,70 @@ class MovieFileCSVReader:
 		if isinstance(newGenres, set):
 			self.genres = newGenres
 
+	def get_actor(self, name):
+		for actor in self.actors:
+			if actor.actor_full_name == name:
+				return actor
+		return Actor(arg_name=name)
+
+	def get_director(self, name):
+		for director in self.directors:
+			if director.director_full_name == name:
+				return director
+		return Director(arg_name=name)
+
+	def get_genre(self, name):
+		for genre in self.genres:
+			if genre.name == name:
+				return genre
+		return Genre(arg_name=name)
+
+	def get_movie(self, title):
+		for movie in self.movies:
+			if movie.title == title:
+				return movie
+		return Movie(title)
+
 	def read_csv_file(self):
 		try:
+			print("PROCESSING CSV FILE...")
 			csvfile = open(self.file_name, encoding='utf-8-sig', newline='')
 			reader = csv.DictReader(csvfile)
 			for row in reader:
 				try:
-					movie = Movie(row['Title'].strip(), int(row['Year'].strip()))
-					movie.description = row['Description']
-					director = Director(row['Director'].strip())
-					for existing_director in self.directors:
-						if existing_director.director_full_name == director.director_full_name:
-							director = existing_director
-							break
-					movie.director = director
-					director.add_movie(movie)
-					self.directors.add(director)
-					actors = [Actor(actor.strip()) for actor in row['Actors'].split(",")]
-					for i in range(len(actors)):
-						for existing_actor in self.actors:
-							if actors[i].actor_full_name == existing_actor.actor_full_name:
-								actors[i] = existing_actor
-								break
-						movie.add_actor(actors[i])
-						actors[i].add_movie(movie)
-					self.actors.update(set(actors))
-					genres = [Genre(genre.strip()) for genre in row['Genre'].split(",")]
-					for i in range(len(genres)):
-						for existing_genre in self.genres:
-							if genres[i].name == existing_genre.name:
-								genres[i] = existing_genre
-								break
-						movie.add_genre(genres[i])
-						genres[i].add_movie(movie)
-					self.genres.update(set(genres))
-					movie.runtime_minutes = int(row['Runtime (Minutes)'])
-					movie.rating = float(row['Rating'])
-					movie.votes = int(row['Votes'])
+					# STEP ONE: Create and store isolated object references
+					movie = Movie(arg_title=row['Title'].strip(), arg_year=int(row['Year'].strip()),
+								  arg_description=row['Description'].replace("\"", "'"),
+								  arg_runtime_minutes=int(row['Runtime (Minutes)']),
+								  arg_rating=float(row['Rating']), arg_votes=int(row['Votes']))
 					self.movies.append(movie)
-				except Exception as err:
+					director = self.get_director(row['Director'].strip())
+					self.directors.add(director)
+					actors = [self.get_actor(actor.strip()) for actor in row['Actors'].split(",")]
+					self.actors.update(set(actors))
+					genres = [self.get_genre(genre.strip()) for genre in row['Genre'].split(",")]
+					self.genres.update(set(genres))
+
+					# STEP TWO: Populate object relationships
+					director.add_movie(movie)
+					movie.director = director
+					for actor in actors:
+						actor.add_movie(movie)
+						movie.add_actor(actor)
+						for other_actor in actors:
+							if other_actor is not actor:
+								actor.add_actor_colleague(other_actor)
+								other_actor.add_actor_colleague(actor)
+						print(actor.actor_full_name + ": " + actor.movies)
+					for genre in genres:
+						genre.add_movie(movie)
+						movie.add_genre(genre)
+				except Exception:
 					continue  # Skips movies with invalid formatting
 			csvfile.close()
-		except:
-			raise Exception("Error while reading CSV file!")
+			print("CSV FILE PROCESSED")
+		except Exception as err:
+			raise Exception(f"Error while reading CSV file:\n{err}")
 
 
 if __name__ == "__main__":

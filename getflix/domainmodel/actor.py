@@ -72,9 +72,10 @@ class Actor:
 		print("WARNING: Codes cannot be manually reassigned")
 
 	def add_actor_colleague(self, colleague):
-		self.actor_colleagues.append(colleague)
-		self.actor_colleague_codes = ",".join([actor.code for actor in self.actor_colleagues])
-		colleague.colleagues.append(self)
+		if colleague not in self.actor_colleagues:
+			self.actor_colleagues.append(colleague)
+			self.actor_colleague_codes = ",".join([actor.code for actor in self.actor_colleagues])
+			colleague.add_actor_colleague(self)
 
 	def add_movie(self, newMovie):
 		if newMovie not in self.actor_movies:

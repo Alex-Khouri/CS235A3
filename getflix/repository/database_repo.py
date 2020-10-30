@@ -1,5 +1,13 @@
 from getflix.datafilereaders.movie_file_csv_reader import MovieFileCSVReader
 
+from getflix.domainmodel.actor import Actor
+from getflix.domainmodel.director import Director
+from getflix.domainmodel.genre import Genre
+from getflix.domainmodel.movie import Movie
+from getflix.domainmodel.review import Review
+from getflix.domainmodel.user import User
+from getflix.domainmodel.watchlist import Watchlist
+
 from sqlalchemy.orm import scoped_session
 from flask import _app_ctx_stack
 from werkzeug.security import generate_password_hash
@@ -116,6 +124,7 @@ class DatabaseRepo:
 			self.repo_watchlists = newWatchlists
 
 	def populate(self, engine, data_path):
+		print("INITIALISING DATABASE...")
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
 		csvReader = MovieFileCSVReader(data_path)
@@ -127,16 +136,10 @@ class DatabaseRepo:
 		for genre in self.repo_genres:
 			cursor.execute(f"""INSERT INTO genres (name, movie_codes, code)
 							VALUES ("{genre.name}", "{genre.movie_codes}", "{genre.code}")""")
-
-		empty_codes = 0  # DEBUGGING
 		for actor in self.repo_actors:
-			if len(actor.movie_codes) == 0 and len(actor.movies) > 0:  # DEBUGGING
-				empty_codes += 1  # DEBUGGING
 			cursor.execute(f"""INSERT INTO actors (name, movie_codes, colleague_codes, code)
 							VALUES ("{actor.actor_full_name}", "{actor.movie_codes}",
 									"{actor.colleague_codes}", "{actor.code}")""")
-		print(f"*** ERROR: {empty_codes} actors have empty movie codes!")  # DEBUGGING
-
 		for director in self.repo_directors:
 			cursor.execute(f"""INSERT INTO directors (name, movie_codes, code)
 							VALUES ("{director.director_full_name}", "{director.movie_codes}",
@@ -151,8 +154,10 @@ class DatabaseRepo:
 									"{movie.rating}", {movie.votes}, "{movie.code}")""")
 		conn.commit()
 		conn.close()
+		print("DATABASE INITIALISED")
 
 	def load(self, engine):
+		print("LOADING DATABASE...")
 		conn = engine.raw_connection()
 		cursor = conn.cursor()
 		# STEP ONE: Retrieve entries from database
@@ -197,38 +202,39 @@ class DatabaseRepo:
 
 		# STEP THREE: Populate object relationships
 		for actor in self.repo_actors:
-			for code in actor.movie_codes:
+			for code in actor.movie_codes.split(","):
 				actor.add_movie(self.find_movie(code))
-			for code in actor.colleague_codes:
+			for code in actor.colleague_codes.split(","):
 				actor.add_actor_colleague(self.find_actor(code))
 		for director in self.repo_directors:
-			for code in director.movie_codes:
+			for code in director.movie_codes.split(","):
 				director.add_movie(self.find_movie(code))
 		for genre in self.repo_genres:
-			for code in genre.movie_codes:
+			for code in genre.movie_codes.split(","):
 				genre.add_movie(self.find_movie(code))
 		for movie in self.repo_movies:
 			movie.director = self.find_director(movie.director_code)
-			for code in movie.actor_codes:
+			for code in movie.actor_codes.split(","):
 				movie.add_actor(self.find_actor(code))
-			for code in movie.genre_codes:
+			for code in movie.genre_codes.split(","):
 				movie.add_genre(self.find_genre(code))
-			for code in movie.review_codes:
+			for code in movie.review_codes.split(","):
 				movie.add_review(self.find_review(code))
 		for review in self.repo_reviews:
 			review.user = self.find_user(review.user_code)
 			review.movie = self.find_movie(review.movie_code)
 		for user in self.repo_users:
-			for code in user.watched_movie_codes:
+			for code in user.watched_movie_codes.split(","):
 				user.watched_movies.append(self.find_movie(code))  # Can't use watch_movie() for this
-			for code in user.review_codes:
+			for code in user.review_codes.split(","):
 				user.add_review(self.find_review(code))
 			user.watchlist = self.find_watchlist(user.watchlist_code)
 		for watchlist in self.repo_watchlists:
-			for code in watchlist.movie_codes:
+			for code in watchlist.movie_codes.split(","):
 				watchlist.add_movie(self.find_movie(code))
 		conn.commit()
 		conn.close()
+		print("DATABASE LOADED")
 
 	def add_user(self, newUser, engine):
 		if newUser not in self.repo_users and newUser.username not in [user.username for user in self.repo_users]:
@@ -252,7 +258,7 @@ class DatabaseRepo:
 			conn = engine.raw_connection()
 			cursor = conn.cursor()
 			cursor.execute(f"""DELETE FROM users WHERE username == "{remUser.username}" """)
-			cursor.execute(f"""DELETE FROM watchlists WHERE user_code = "{remUser.code}" """)
+			cursor.execute(f"""DELETE FROM watchlists WHERE code = "{remUser.watchlist.code}" """)
 			cursor.commit()
 			conn.close()
 			return True
@@ -322,50 +328,51 @@ class DatabaseRepo:
 		for actor in self.repo_actors:
 			if actor.code == code:
 				return actor
+		print("Unable to find actor code: " + code)
 		return None
 
 	def find_director(self, code):
 		for director in self.repo_directors:
 			if director.code == code:
 				return director
+		print("Unable to find director code: " + code)
 		return None
 
 	def find_genre(self, code):
 		for genre in self.repo_genres:
 			if genre.code == code:
 				return genre
+		print("Unable to find genre code: " + code)
 		return None
 
 	def find_movie(self, code):
 		for movie in self.repo_movies:
 			if movie.code == code:
 				return movie
+		print("Unable to find movie code: " + code)
 		return None
 
 	def find_review(self, code):
 		for review in self.repo_reviews:
 			if review.code == code:
 				return review
+		print("Unable to find review code: " + code)
 		return None
 
 	def find_user(self, code):
 		for user in self.repo_users:
 			if user.code == code:
 				return user
+		print("Unable to find user code: " + code)
 		return None
 
 	def find_watchlist(self, code):
 		for watchlist in self.repo_watchlists:
 			if watchlist.code == code:
 				return watchlist
+		print("Unable to find watchlist code: " + code)
 		return None
 
 
-if __name__ == "__main__":
-	from getflix.domainmodel.actor import Actor
-	from getflix.domainmodel.director import Director
-	from getflix.domainmodel.genre import Genre
-	from getflix.domainmodel.movie import Movie
-	from getflix.domainmodel.review import Review
-	from getflix.domainmodel.user import User
-	from getflix.domainmodel.watchlist import Watchlist
+if __name__ == "__main__":  # Deprecated
+	pass

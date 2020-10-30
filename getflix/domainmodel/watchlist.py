@@ -1,5 +1,3 @@
-
-
 class Watchlist:
 	def __init__(self, arg_user_code, arg_movies=list(), arg_movie_codes="", arg_code=None):
 		self.watchlist_user_code = arg_user_code
