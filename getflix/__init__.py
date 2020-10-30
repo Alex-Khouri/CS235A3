@@ -9,7 +9,6 @@ from getflix.domainmodel.review import Review
 from getflix.domainmodel.user import User
 from getflix.domainmodel.watchlist import Watchlist
 
-import getflix.repository.database_repo as database_repo
 from getflix.repository.orm import metadata, map_model_to_tables
 
 from sqlalchemy import create_engine
