@@ -89,7 +89,7 @@ class Movie:
 
 	@property
 	def rating(self):
-		return round(self.movie_rating, 1)
+		return round(float(self.movie_rating), 1)
 
 	@property
 	def votes(self):
@@ -195,15 +195,16 @@ class Movie:
 			self.movie_genre_codes = ",".join([genre.code for genre in self.movie_genres])
 
 	def add_review(self, newReview):
-		self.movie_reviews.append(newReview)
-		self.movie_review_codes = ",".join([review.code for review in self.movie_reviews])
-		self.movie_review_count += 1
-		self.movie_votes += 1
-		v = self.movie_votes
-		if self.movie_rating is None:
-			self.movie_rating = newReview.rating
-		else:
-			self.movie_rating = self.movie_rating * ((v - 1) / v) + newReview.rating * (1 / v)
+		if newReview is not None:
+			self.movie_reviews.append(newReview)
+			self.movie_review_codes = ",".join([review.code for review in self.movie_reviews])
+			self.movie_review_count += 1
+			self.movie_votes += 1
+			v = self.movie_votes
+			if self.movie_rating is None:
+				self.movie_rating = newReview.rating
+			else:
+				self.movie_rating = self.movie_rating * ((v - 1) / v) + newReview.rating * (1 / v)
 
 	def remove_actor(self, remActor):
 		if remActor in self.movie_actors:

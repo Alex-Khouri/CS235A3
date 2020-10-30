@@ -124,12 +124,14 @@ class User:
 			self.user_watchlist.remove_movie(movie)
 
 	def add_review(self, review):
-		self.user_reviews.append(review)
-		self.user_review_codes = ",".join([review.code for review in self.user_reviews])
+		if review is not None:
+			self.user_reviews.append(review)
+			self.user_review_codes = ",".join([review.code for review in self.user_reviews])
 
 	def remove_review(self, review):
-		self.user_reviews.remove(review)
-		self.user_review_codes = ",".join([review.code for review in self.user_reviews])
+		if review is not None:
+			self.user_reviews.remove(review)
+			self.user_review_codes = ",".join([review.code for review in self.user_reviews])
 
 
 if __name__ == "__main__":

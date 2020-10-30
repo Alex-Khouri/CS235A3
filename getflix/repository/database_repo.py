@@ -202,35 +202,45 @@ class DatabaseRepo:
 		# STEP THREE: Populate object relationships
 		for actor in self.repo_actors:
 			for code in actor.movie_codes.split(","):
-				actor.add_movie(self.find_movie(code))
+				if code != "":
+					actor.add_movie(self.find_movie(code))
 			for code in actor.colleague_codes.split(","):
-				actor.add_actor_colleague(self.find_actor(code))
+				if code != "":
+					actor.add_actor_colleague(self.find_actor(code))
 		for director in self.repo_directors:
 			for code in director.movie_codes.split(","):
-				director.add_movie(self.find_movie(code))
+				if code != "":
+					director.add_movie(self.find_movie(code))
 		for genre in self.repo_genres:
 			for code in genre.movie_codes.split(","):
-				genre.add_movie(self.find_movie(code))
+				if code != "":
+					genre.add_movie(self.find_movie(code))
 		for movie in self.repo_movies:
 			movie.director = self.find_director(movie.director_code)
 			for code in movie.actor_codes.split(","):
-				movie.add_actor(self.find_actor(code))
+				if code != "":
+					movie.add_actor(self.find_actor(code))
 			for code in movie.genre_codes.split(","):
-				movie.add_genre(self.find_genre(code))
+				if code != "":
+					movie.add_genre(self.find_genre(code))
 			for code in movie.review_codes.split(","):
-				movie.add_review(self.find_review(code))
+				if code != "":
+					movie.add_review(self.find_review(code))
 		for review in self.repo_reviews:
 			review.user = self.find_user(review.user_code)
 			review.movie = self.find_movie(review.movie_code)
 		for user in self.repo_users:
 			for code in user.watched_movie_codes.split(","):
-				user.watched_movies.append(self.find_movie(code))  # Can't use watch_movie() for this
+				if code != "":
+					user.watched_movies.append(self.find_movie(code))  # Can't use watch_movie() for this
 			for code in user.review_codes.split(","):
-				user.add_review(self.find_review(code))
+				if code != "":
+					user.add_review(self.find_review(code))
 			user.watchlist = self.find_watchlist(user.watchlist_code)
 		for watchlist in self.repo_watchlists:
 			for code in watchlist.movie_codes.split(","):
-				watchlist.add_movie(self.find_movie(code))
+				if code != "":
+					watchlist.add_movie(self.find_movie(code))
 		conn.commit()
 		conn.close()
 		print("DATABASE LOADED")
