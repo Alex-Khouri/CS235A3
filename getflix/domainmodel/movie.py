@@ -5,6 +5,7 @@ class Movie:
 				 arg_review_count=0, arg_rating=None, arg_votes=0, arg_code=None):
 		self.movie_title = arg_title.strip() if isinstance(arg_title, str) and len(arg_title) > 0 else None
 		self.movie_year = arg_year if isinstance(arg_year, int) and arg_year >= 1900 else None
+		self.movie_code = str(hash(self.movie_title + str(self.movie_year))) if arg_code is None else arg_code
 		self.movie_description = arg_description
 		self.movie_director = arg_director
 		self.movie_director_code = arg_director_code
@@ -18,7 +19,6 @@ class Movie:
 		self.movie_review_count = arg_review_count
 		self.movie_rating = arg_rating
 		self.movie_votes = arg_votes
-		self.movie_code = str(hash(self.movie_title + str(self.movie_year))) if arg_code is None else arg_code
 
 	def __repr__(self):
 		return f"<Movie {self.movie_title}, {self.movie_year}>"

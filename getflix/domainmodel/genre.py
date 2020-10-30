@@ -1,9 +1,9 @@
 class Genre:
 	def __init__(self, arg_name=None, arg_movies=None, arg_movie_codes="", arg_code=None):
 		self.genre_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None
+		self.genre_code = str(hash(self.genre_name)) if arg_code is None else arg_code
 		self.genre_movies = list() if arg_movies is None else arg_movies
 		self.genre_movie_codes = arg_movie_codes
-		self.genre_code = str(hash(self.genre_name)) if arg_code is None else arg_code
 	
 	def __repr__(self):
 		return f"<Genre {self.genre_name}>"

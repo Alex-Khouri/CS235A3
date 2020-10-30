@@ -13,8 +13,8 @@ def user():
     return User("Bob", "Password1")
 
 @pytest.fixture
-def watchlist():
-	watchlist = Watchlist()
+def watchlist(user):
+	watchlist = Watchlist(user.code)
 	watchlist.add_movie(Movie("Moana", 2016))
 	watchlist.add_movie(Movie("Ice Age", 2002))
 	watchlist.add_movie(Movie("Guardians of the Galaxy", 2012))
@@ -84,7 +84,8 @@ def test_movie_remove_genre():
 
 # Review tests
 def test_review_init(user):
-	review = Review(user, Movie("Imception", 2011), "It was pretty weird", 6)
+	review = Review(arg_user=user, arg_movie=Movie("Imception", 2011),
+					arg_text="It was pretty weird", arg_rating=6)
 	assert str(review.user) == "<User bob>"
 	assert str(review.movie) == "<Movie Imception, 2011>"
 	assert str(review.text) == "It was pretty weird"
@@ -99,7 +100,8 @@ def test_user_watch_movie(user):
 	assert user.time_spent_watching_movies_minutes == movie.runtime_minutes
 
 def test_user_remove_review(user):
-	review = Review(user, Movie("Imception", 2011), "It was pretty weird", 6)
+	review = Review(arg_user=user, arg_movie=Movie("Imception", 2011),
+					arg_text="It was pretty weird", arg_rating=6)
 	user.add_review(review)
 	assert len(user.reviews) == 1
 	user.remove_review(review)

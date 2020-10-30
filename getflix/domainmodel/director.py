@@ -1,9 +1,9 @@
 class Director:
 	def __init__(self, arg_name=None, arg_movies=None, arg_movie_codes="", arg_code=None):
 		self.director_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None
+		self.director_code = str(hash(self.director_name)) if arg_code is None else arg_code
 		self.director_movies = list() if arg_movies is None else arg_movies
 		self.director_movie_codes = arg_movie_codes
-		self.director_code = str(hash(self.director_name)) if arg_code is None else arg_code
 	
 	def __repr__(self):
 		return f"<Director {self.director_name}>"
