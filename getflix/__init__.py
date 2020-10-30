@@ -169,7 +169,6 @@ def create_app():
 		session["authStatus"] = session.get("authStatus", "logged out")
 		session["authMessage"] = ""
 		movie = repo.get_movie(request.args.get("MovieTitle"))
-		user.watchlist.add_movie(movie)
 		repo.add_to_watchlist(user, movie, database_engine)
 		clientData["watchlistSize"] = watchlist_size(user.watchlist)
 		return render_template('index.html', **servData, **clientData)
@@ -190,7 +189,6 @@ def create_app():
 		session["authMessage"] = ""
 		user = repo.get_user(session["currUsername"])
 		movie = repo.get_movie(request.args.get("MovieTitle"))
-		user.watchlist.remove_movie(movie)
 		repo.remove_from_watchlist(user, movie, database_engine)
 		clientData["watchlistSize"] = watchlist_size(user.watchlist)
 		return render_template('index.html', **servData, **clientData)
@@ -217,8 +215,6 @@ def create_app():
 				review = Review(arg_user=user, arg_movie=movie,
 								arg_text=request.args.get("ReviewComments").replace("\"", "'"),
 								arg_rating=rating)
-				movie.add_review(review)
-				user.add_review(review)
 				repo.add_review(review, user, movie, database_engine)
 			else:
 				raise ValueError

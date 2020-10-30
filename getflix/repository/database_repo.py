@@ -255,7 +255,7 @@ class DatabaseRepo:
 							"{newUser.password}", "", "", 0, "{newUser.watchlist.code}", "{newUser.code}")""")
 			cursor.execute(f"""INSERT INTO watchlists (user_code, movie_codes, code)
 							VALUES ("{newUser.code}", "", "{newUser.watchlist.code}")""")
-			cursor.commit()
+			conn.commit()
 			conn.close()
 			return True
 		else:
@@ -268,7 +268,7 @@ class DatabaseRepo:
 			cursor = conn.cursor()
 			cursor.execute(f"""DELETE FROM users WHERE username == "{remUser.username}" """)
 			cursor.execute(f"""DELETE FROM watchlists WHERE code = "{remUser.watchlist.code}" """)
-			cursor.commit()
+			conn.commit()
 			conn.close()
 			return True
 		else:
@@ -280,7 +280,8 @@ class DatabaseRepo:
 		cursor.execute(f"""UPDATE watchlists
 						SET movie_codes = "{user.watchlist.movie_codes + ',' + newMovie.code}"
 						WHERE code = "{user.watchlist.code}" """)
-		cursor.commit()
+		conn.commit()
+		user.watchlist.add_movie(newMovie)
 		conn.close()
 
 	def remove_from_watchlist(self, user, remMovie, engine):
@@ -291,7 +292,8 @@ class DatabaseRepo:
 		cursor.execute(f"""UPDATE watchlists
 						SET movie_codes = "{",".join(new_movie_codes)}"
 						WHERE code = "{user.watchlist.code}" """)
-		cursor.commit()
+		conn.commit()
+		user.watchlist.remove_movie(remMovie)
 		conn.close()
 
 	def add_review(self, review, user, movie, engine):
@@ -307,7 +309,9 @@ class DatabaseRepo:
 						WHERE code = "{movie.code}" """)
 		cursor.execute(f"""UPDATE users SET review_codes = "{user.review_codes + "," + review.code}" 
 						WHERE code = "{user.code}" """)
-		cursor.commit()
+		conn.commit()
+		movie.add_review(review)
+		user.add_review(review)
 		conn.close()
 
 
