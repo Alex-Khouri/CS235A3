@@ -68,12 +68,6 @@ class MovieFileCSVReader:
 				return genre
 		return Genre(arg_name=name)
 
-	def get_movie(self, title):
-		for movie in self.movies:
-			if movie.title == title:
-				return movie
-		return Movie(title)
-
 	def read_csv_file(self):
 		try:
 			print("PROCESSING CSV FILE...")
@@ -104,7 +98,6 @@ class MovieFileCSVReader:
 							if other_actor is not actor:
 								actor.add_actor_colleague(other_actor)
 								other_actor.add_actor_colleague(actor)
-						print(actor.actor_full_name + ": " + actor.movies)
 					for genre in genres:
 						genre.add_movie(movie)
 						movie.add_genre(genre)
