@@ -74,7 +74,7 @@ class MovieFileCSVReader:
 			csvfile = open(self.file_name, encoding='utf-8-sig', newline='')
 			reader = csv.DictReader(csvfile)
 			for row in reader:
-				# STEP ONE: Create and store isolated object references
+				# STEP ONE: Create isolated object references
 				movie = Movie(arg_title=row['Title'].strip(), arg_year=int(row['Year'].strip()),
 							  arg_description=row['Description'].replace("\"", "'"),
 							  arg_runtime_minutes=int(row['Runtime (Minutes)']),
@@ -96,19 +96,11 @@ class MovieFileCSVReader:
 					genre.add_movie(movie)
 					movie.add_genre(genre)
 
+				# STEP THREE: Store objects
 				self.reader_movies.append(movie)
 				self.reader_directors.add(director)
 				self.reader_actors.update(set(actors))
 				self.reader_genres.update(set(genres))
-
-				if int(row['Rank']) < 5:  # DEBUGGING
-					print(f"\nLine: {row['Rank']}\nDirector: {director.director_full_name}\n"
-						  f"Movies: {director.movies}")
-					for mov in self.reader_movies:
-						print(f"Movie: {mov.title}\nDirector: {mov.director.director_full_name}\nActors: {mov.actors}\nGenres: {mov.genres}")
-						print("---")
-					print("----------")
-
 			csvfile.close()
 			print("CSV FILE PROCESSED")
 		except Exception as err:

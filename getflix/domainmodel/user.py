@@ -2,14 +2,14 @@ from getflix.domainmodel.watchlist import Watchlist
 
 
 class User:
-	def __init__(self, arg_username=None, arg_password=None, arg_watched=list(), arg_watched_codes="",
-				 arg_reviews=list(), arg_review_codes="", arg_timewatching=0, arg_watchlist=None,
+	def __init__(self, arg_username=None, arg_password=None, arg_watched=None, arg_watched_codes="",
+				 arg_reviews=None, arg_review_codes="", arg_timewatching=0, arg_watchlist=None,
 				 arg_watchlist_code=None, arg_code=None):
 		self.user_username = arg_username.strip().lower() if isinstance(arg_username, str) else None
 		self.user_password = arg_password if isinstance(arg_password, str) else None
-		self.user_watched = arg_watched
+		self.user_watched = list() if arg_watched is None else arg_watched
 		self.user_watched_codes = arg_watched_codes
-		self.user_reviews = arg_reviews
+		self.user_reviews = list() if arg_reviews is None else arg_reviews
 		self.user_review_codes = arg_review_codes
 		self.user_timewatching = arg_timewatching
 		self.user_watchlist = Watchlist(self.user_code) if arg_watchlist is None else arg_watchlist

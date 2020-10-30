@@ -1,10 +1,10 @@
 class Actor:
-	def __init__(self, arg_name=None, arg_movies=list(), arg_movie_codes="", arg_colleagues=list(),
+	def __init__(self, arg_name=None, arg_movies=None, arg_movie_codes="", arg_colleagues=None,
 				 arg_colleague_codes="", arg_code=None):
 		self.actor_name = arg_name if isinstance(arg_name, str) and len(arg_name) > 0 else None
-		self.actor_movies = arg_movies
+		self.actor_movies = list() if arg_movies is None else arg_movies
 		self.actor_movie_codes = arg_movie_codes
-		self.actor_colleagues = arg_colleagues
+		self.actor_colleagues = list() if arg_colleagues is None else arg_colleagues
 		self.actor_colleague_codes = arg_colleague_codes
 		self.actor_code = str(hash(self.actor_name)) if arg_code is None else arg_code
 

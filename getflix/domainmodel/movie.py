@@ -1,19 +1,19 @@
 class Movie:
 	def __init__(self, arg_title=None, arg_year=None, arg_description=None, arg_director=None,
-				 arg_director_code="", arg_actors=list(), arg_actor_codes="", arg_genres=list(),
-				 arg_genre_codes="", arg_runtime_minutes=0, arg_reviews=list(), arg_review_codes="",
+				 arg_director_code="", arg_actors=None, arg_actor_codes="", arg_genres=None,
+				 arg_genre_codes="", arg_runtime_minutes=0, arg_reviews=None, arg_review_codes="",
 				 arg_review_count=0, arg_rating=None, arg_votes=0, arg_code=None):
 		self.movie_title = arg_title.strip() if isinstance(arg_title, str) and len(arg_title) > 0 else None
 		self.movie_year = arg_year if isinstance(arg_year, int) and arg_year >= 1900 else None
 		self.movie_description = arg_description
 		self.movie_director = arg_director
 		self.movie_director_code = arg_director_code
-		self.movie_actors = arg_actors
+		self.movie_actors = list() if arg_actors is None else arg_actors
 		self.movie_actor_codes = arg_actor_codes
-		self.movie_genres = arg_genres
+		self.movie_genres = list() if arg_genres is None else arg_genres
 		self.movie_genre_codes = arg_genre_codes
 		self.movie_runtime_minutes = arg_runtime_minutes
-		self.movie_reviews = arg_reviews
+		self.movie_reviews = list() if arg_reviews is None else arg_reviews
 		self.movie_review_codes = arg_review_codes
 		self.movie_review_count = arg_review_count
 		self.movie_rating = arg_rating
@@ -186,9 +186,8 @@ class Movie:
 			self.movie_actor_codes = ",".join([actor.code for actor in self.movie_actors])
 
 	def add_director(self, newDirector):
-		if self.movie_director is not newDirector:
-			self.movie_director = newDirector
-			self.movie_director_code = newDirector.code
+		self.movie_director = newDirector
+		self.movie_director_code = newDirector.code
 
 	def add_genre(self, newGenre):
 		if not newGenre in self.movie_genres:

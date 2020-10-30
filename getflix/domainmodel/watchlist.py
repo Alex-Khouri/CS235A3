@@ -1,7 +1,7 @@
 class Watchlist:
-	def __init__(self, arg_user_code, arg_movies=list(), arg_movie_codes="", arg_code=None):
+	def __init__(self, arg_user_code, arg_movies=None, arg_movie_codes="", arg_code=None):
 		self.watchlist_user_code = arg_user_code
-		self.watchlist_movies = arg_movies
+		self.watchlist_movies = list() if arg_movies is None else arg_movies
 		self.watchlist_movie_codes = arg_movie_codes
 		self.watchlist_code = str(hash(self.watchlist_user_code)) if arg_code is None else arg_code
 		self.iterIndex = 0
