@@ -17,7 +17,7 @@ class Movie:
 		self.movie_reviews = list() if arg_reviews is None else arg_reviews
 		self.movie_review_codes = arg_review_codes
 		self.movie_review_count = arg_review_count
-		self.movie_rating = float(arg_rating)
+		self.movie_rating = 0.0 if arg_rating is None else float(arg_rating)
 		self.movie_votes = arg_votes
 
 	def __repr__(self):
